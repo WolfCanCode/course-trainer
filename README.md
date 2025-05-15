@@ -25,7 +25,7 @@ npm install
 ### 3. Set up environment variables
 Create a `.env.local` file in the project root:
 ```env
-HUGGINGFACE_TOKEN=your_huggingface_api_token_here
+PUBLIC_HUGGINGFACE_TOKEN=your_huggingface_api_token_here
 ```
 - Get your HuggingFace API token from https://huggingface.co/settings/tokens
 

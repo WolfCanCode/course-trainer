@@ -42,7 +42,7 @@ export const getQuestion = server$(async function (
   topic: string,
   locale: string = "en",
 ): Promise<QuizQuestion> {
-  const token = import.meta.env.PUBLIC_HUGGINGFACE_TOKEN;
+  const token = process.env.PUBLIC_HUGGINGFACE_TOKEN;
   if (!token) throw new Error("HuggingFace token not set");
 
   return retry(
