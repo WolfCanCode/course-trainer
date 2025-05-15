@@ -49,7 +49,7 @@ export const getQuestion = server$(async function (
   count: number,
   exclude: string[] = [],
   locale: string = "en",
-): Promise<QuizQuestion> {
+): Promise<QuizQuestion[]> {
   const token = process.env.PUBLIC_HUGGINGFACE_TOKEN;
   if (!token) throw new Error("HuggingFace token not set");
 
