@@ -59,11 +59,12 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: "Welcome to Qwik",
+  title: "Course Trainer",
   meta: [
     {
       name: "description",
-      content: "Qwik site description",
+      content:
+        "Course Trainer: AI-powered certification quiz practice for AWS, Azure, and more.",
     },
   ],
 };
