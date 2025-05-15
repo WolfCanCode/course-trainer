@@ -3,19 +3,19 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
 
 // Static data for course groups and courses
-const courseGroups = [
+export const courseGroups = [
   {
     name: "AWS",
     courses: [
-      { id: "aws-cloud-practitioner", name: "Cloud Practitioner" },
-      { id: "aws-solutions-architect", name: "Solutions Architect" },
+      { id: "aws-cloud-practitioner", name: "AWS Cloud Practitioner" },
+      { id: "aws-solutions-architect", name: "AWS Solutions Architect" },
     ],
   },
   {
     name: "Azure",
     courses: [
-      { id: "azure-fundamentals", name: "Fundamentals" },
-      { id: "azure-administrator", name: "Administrator" },
+      { id: "azure-fundamentals", name: "AWS Fundamentals" },
+      { id: "azure-administrator", name: "AWS Administrator" },
     ],
   },
   // Add more groups/courses as needed

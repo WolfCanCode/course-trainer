@@ -8,6 +8,7 @@ import {
 } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { getQuestion, type QuizQuestion } from "./get-question";
+import { courseGroups } from "~/routes";
 
 // Number of questions per certificate
 const certificateQuestionCounts: Record<string, number> = {
@@ -70,6 +71,10 @@ export default component$(() => {
     }));
   });
 
+  const courseName = courseGroups.find((group) =>
+    group.courses.some((course) => course.id === courseId),
+  )?.name;
+
   return (
     <div class="flex min-h-screen justify-center bg-gradient-to-br from-slate-100 to-slate-200 px-2 py-8">
       <div class="w-full max-w-3xl">
@@ -96,8 +101,7 @@ export default component$(() => {
               <div>
                 <div class="mb-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <h1 class="text-3xl font-bold text-slate-800">
-                    {courseId.replace(/-/g, " ").charAt(0).toUpperCase() +
-                      courseId.replace(/-/g, " ").slice(1)}
+                    {courseName}
                   </h1>
                   <div class="text-base font-medium text-slate-600">
                     Progress:{" "}
