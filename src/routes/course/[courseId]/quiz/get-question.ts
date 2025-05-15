@@ -25,24 +25,32 @@ async function retry<T>(
 }
 
 // Simple prompt generator (customize as needed)
-const prompts: Record<string, { questionPrompt: (topic: string) => string }> = {
+const prompts: Record<
+  string,
+  {
+    questionPrompt: (topic: string, count: number, exclude: string[]) => string;
+  }
+> = {
   en: {
-    questionPrompt: (topic: string) =>
-      `Generate a multiple-choice question for the ${topic} certificate exam. Return *ONLY* *JSON* like the following:
-      {
-        "question": string,
-        "options": string[],
-        "correctAnswer": string,
-        "explanation": string
-      }`,
+    questionPrompt: (topic: string, count: number, exclude: string[]) =>
+      `Generate ${count} new, unique multiple-choice questions for the ${topic} certificate exam.
+Do NOT repeat any of these questions:
+${exclude.length > 0 ? exclude.map((q, i) => `${i + 1}. ${q}`).join("\n") : ""}
+Return *ONLY* *JSON* as an array of objects like:
+[
+  { "question": string, "options": string[], "correctAnswer": string, "explanation": string }
+]
+`,
   },
 };
 
 export const getQuestion = server$(async function (
   topic: string,
+  count: number,
+  exclude: string[] = [],
   locale: string = "en",
-): Promise<QuizQuestion> {
-  const token = import.meta.env.PUBLIC_HUGGINGFACE_TOKEN;
+): Promise<QuizQuestion[]> {
+  const token = process.env.PUBLIC_HUGGINGFACE_TOKEN;
   if (!token) throw new Error("HuggingFace token not set");
 
   return retry(
@@ -58,12 +66,12 @@ export const getQuestion = server$(async function (
           body: JSON.stringify({
             model: "meta-llama/llama-4-maverick-17b-128e-instruct-fp8",
             stream: false,
-            max_tokens: 1024,
+            max_tokens: 4096,
             temperature: 1.0,
             messages: [
               {
                 role: "user",
-                content: prompts[locale].questionPrompt(topic),
+                content: prompts[locale].questionPrompt(topic, count, exclude),
               },
             ],
           }),
@@ -78,7 +86,7 @@ export const getQuestion = server$(async function (
         .replace(/\\\*/g, "*")
         .trim();
       try {
-        return JSON.parse(cleaned) as QuizQuestion;
+        return JSON.parse(cleaned) as QuizQuestion[];
       } catch (error) {
         console.error("Error parsing question JSON:", error);
         throw error;
