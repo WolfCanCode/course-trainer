@@ -3,19 +3,19 @@ import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
 
 // Static data for course groups and courses
-const courseGroups = [
+export const courseGroups = [
   {
     name: "AWS",
     courses: [
-      { id: "aws-cloud-practitioner", name: "Cloud Practitioner" },
-      { id: "aws-solutions-architect", name: "Solutions Architect" },
+      { id: "aws-cloud-practitioner", name: "AWS Cloud Practitioner" },
+      { id: "aws-solutions-architect", name: "AWS Solutions Architect" },
     ],
   },
   {
     name: "Azure",
     courses: [
-      { id: "azure-fundamentals", name: "Fundamentals" },
-      { id: "azure-administrator", name: "Administrator" },
+      { id: "azure-fundamentals", name: "AWS Fundamentals" },
+      { id: "azure-administrator", name: "AWS Administrator" },
     ],
   },
   // Add more groups/courses as needed
@@ -23,30 +23,48 @@ const courseGroups = [
 
 export default component$(() => {
   return (
-    <div style={{ padding: "2rem", maxWidth: "700px", margin: "0 auto" }}>
-      <h1>Choose a Course Group</h1>
-      {courseGroups.map((group) => (
-        <div key={group.name} style={{ marginBottom: "2rem" }}>
-          <h2>{group.name}</h2>
-          <ul>
-            {group.courses.map((course) => (
-              <li key={course.id} style={{ margin: "0.5rem 0" }}>
-                <Link href={`/course/${course.id}/`}>{course.name}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+    <div class="flex min-h-[70vh] flex-col items-center justify-center py-8">
+      <h1 class="mb-2 text-center text-4xl font-bold text-blue-700">
+        Choose a Course Group
+      </h1>
+      <p class="mb-8 max-w-xl text-center text-slate-600">
+        Select a certification group and course to start your AI-powered quiz
+        practice.
+      </p>
+      <div class="grid w-full max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
+        {courseGroups.map((group) => (
+          <div
+            key={group.name}
+            class="flex flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-lg"
+          >
+            <h2 class="mb-4 border-b border-slate-100 pb-2 text-2xl font-semibold text-slate-800">
+              {group.name}
+            </h2>
+            <div class="flex flex-col gap-4">
+              {group.courses.map((course) => (
+                <Link
+                  key={course.id}
+                  href={`/course/${course.id}/`}
+                  class="block rounded-lg border border-blue-100 bg-blue-50 px-5 py-3 text-lg font-medium text-blue-700 shadow-sm transition hover:bg-blue-100 hover:text-blue-900"
+                >
+                  {course.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 });
 
 export const head: DocumentHead = {
-  title: "Welcome to Qwik",
+  title: "Course Trainer",
   meta: [
     {
       name: "description",
-      content: "Qwik site description",
+      content:
+        "Course Trainer: AI-powered certification quiz practice for AWS, Azure, and more.",
     },
   ],
 };
