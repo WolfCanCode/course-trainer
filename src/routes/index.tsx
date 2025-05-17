@@ -1,7 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
-import { useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { useSignal, useVisibleTask$, $ } from "@builder.io/qwik";
 
 // Static data for course groups and courses
 export const courseGroups = [
@@ -24,12 +24,18 @@ export const courseGroups = [
 
 export default component$(() => {
   const current = useSignal(0);
-  const cardCount = courseGroups.reduce(
-    (acc, group) => acc + group.courses.length,
-    0,
-  );
+  const selectedGroup = useSignal(courseGroups[0].name);
+  const cardCount =
+    courseGroups.find((g) => g.name === selectedGroup.value)?.courses.length ||
+    0;
   const touchStartX = useSignal(0);
   const touchEndX = useSignal(0);
+
+  // Reset course index when group changes
+  const handleGroupSelect = $((groupName: string) => {
+    selectedGroup.value = groupName;
+    current.value = 0;
+  });
 
   useVisibleTask$(() => {
     const container = document.getElementById("mobile-swipe-cards");
@@ -60,24 +66,54 @@ export default component$(() => {
   });
 
   return (
-    <div class="flex min-h-screen flex-col items-center justify-center px-2 py-8">
+    <div class="flex min-h-screen flex-col items-start justify-start px-2 pb-8">
+      {/* Mobile group selector */}
+      <div class="mx-auto mb-4 block w-full max-w-md sm:hidden">
+        <div class="no-scrollbar flex gap-2 overflow-x-auto px-2 py-2">
+          {courseGroups.map((group) => (
+            <button
+              key={group.name}
+              class={`rounded-full border-2 px-4 py-2 font-semibold whitespace-nowrap transition-all ${selectedGroup.value === group.name ? "border-blue-600 bg-blue-600 text-white shadow" : "border-blue-100 bg-white text-blue-700 hover:bg-blue-50"}`}
+              onClick$={() => handleGroupSelect(group.name)}
+            >
+              {group.name}
+            </button>
+          ))}
+        </div>
+      </div>
       {/* Mobile swipeable cards */}
       <div
         id="mobile-swipe-cards"
-        class="relative mx-auto block h-[80vh] w-full max-w-md overflow-hidden sm:hidden"
+        class="relative mx-auto block h-[80vh] w-full max-w-md overflow-hidden px-4 sm:hidden"
       >
-        {courseGroups.map((group, groupIdx) =>
-          group.courses.map((course, idx) => {
-            const cardIdx = groupIdx * courseGroups[0].courses.length + idx;
+        {courseGroups
+          .find((g) => g.name === selectedGroup.value)
+          ?.courses.map((course, idx) => {
+            const offset = idx - current.value;
+            const z = 10 - Math.abs(offset);
+            let style = {};
+            if (offset === 0) {
+              style = { transform: "translateX(0) scale(1)", zIndex: z };
+            } else if (offset === -1) {
+              style = { transform: "translateX(-20%) scale(0.92)", zIndex: z };
+            } else if (offset === 1) {
+              style = { transform: "translateX(20%) scale(0.92)", zIndex: z };
+            } else {
+              style = {
+                transform: `translateX(${offset * 100}%) scale(0.88)`,
+                zIndex: 0,
+                opacity: 0,
+              };
+            }
             return (
               <div
                 key={course.id}
-                class={`absolute inset-0 flex flex-col items-center justify-center transition-transform duration-300 ${current.value === cardIdx ? "z-10 scale-100 opacity-100" : "pointer-events-none z-0 scale-95 opacity-0"}`}
-                style={{
-                  transform: `translateX(${(cardIdx - current.value) * 100}%)`,
-                }}
+                class={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-300 ${offset === 0 ? "opacity-100" : "pointer-events-none opacity-60"}`}
+                style={style}
               >
-                <div class="mb-24 flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
+                <div
+                  class={`mb-24 flex w-full max-w-xs flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 ${offset === 0 ? "shadow-2xl" : "shadow"}`}
+                >
                   <div class="mb-4 flex w-full items-center justify-center">
                     <div class="flex h-32 w-32 items-center justify-center rounded-xl bg-gradient-to-br from-blue-200 to-purple-200 text-5xl font-bold text-blue-600">
                       <span>{course.name[0]}</span>
@@ -96,37 +132,18 @@ export default component$(() => {
                     </button>
                   </Link>
                 </div>
-                {/* Swipe controls */}
-                <div class="absolute bottom-4 left-0 flex w-full items-center justify-between px-4">
-                  <button
-                    class="rounded-full bg-slate-200 p-2 text-xl text-slate-500 disabled:opacity-40"
-                    disabled={current.value === 0}
-                    onClick$={() =>
-                      (current.value = Math.max(0, current.value - 1))
-                    }
-                  >
-                    &#8592;
-                  </button>
-                  <button
-                    class="rounded-full bg-slate-200 p-2 text-xl text-slate-500 disabled:opacity-40"
-                    disabled={
-                      current.value ===
-                      courseGroups.flatMap((g) => g.courses).length - 1
-                    }
-                    onClick$={() =>
-                      (current.value = Math.min(
-                        courseGroups.flatMap((g) => g.courses).length - 1,
-                        current.value + 1,
-                      ))
-                    }
-                  >
-                    &#8594;
-                  </button>
-                </div>
               </div>
             );
-          }),
-        )}
+          })}
+        {/* Swipe indicator dots */}
+        <div class="absolute bottom-2 left-0 z-20 flex w-full justify-center gap-2">
+          {[...Array(cardCount)].map((_, idx) => (
+            <span
+              key={idx}
+              class={`h-2 w-2 rounded-full transition-all duration-300 ${current.value === idx ? "w-4 bg-blue-600" : "bg-slate-300"}`}
+            ></span>
+          ))}
+        </div>
       </div>
       {/* Desktop grid/list */}
       <div class="hidden w-full max-w-4xl grid-cols-1 gap-8 sm:grid md:grid-cols-2">
