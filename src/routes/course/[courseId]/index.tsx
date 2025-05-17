@@ -49,8 +49,13 @@ export default component$(() => {
   const fetchQuestions = $(async (exclude: string[] = []) => {
     const topic = courseId.replace(/-/g, " ");
     const count = BATCH_SIZE;
-    const questions = await getQuestion(topic, count, exclude);
-    return questions;
+    try {
+      return await getQuestion(topic, count, exclude);
+    } catch (err) {
+      noMoreQuestions.value = true;
+      // Optionally, set an error state here
+      return [];
+    }
   });
 
   const fetchInitialQuestions = $(async () => {
@@ -103,7 +108,9 @@ export default component$(() => {
     fetchQuestions(state.questions.map((q) => q.question)).then((next) => {
       prefetched.value = next.length > 0 ? next : null;
       prefetching.value = false;
-      if (!next.length) noMoreQuestions.value = true;
+      if (!next.length) {
+        noMoreQuestions.value = true;
+      }
     });
   }
 

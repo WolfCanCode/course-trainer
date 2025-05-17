@@ -175,6 +175,49 @@ export default component$(() => {
                 opacity: 0,
               };
             }
+            // Determine group for image
+            const group = selectedGroup.value;
+            let logo = null;
+            let bg = "from-blue-200 to-purple-200";
+            if (group === "AWS") {
+              logo = (
+                <svg viewBox="0 0 48 48" width="48" height="48" fill="none">
+                  <rect width="48" height="48" rx="12" fill="#232F3E" />
+                  <text
+                    x="50%"
+                    y="60%"
+                    text-anchor="middle"
+                    fill="#FF9900"
+                    font-size="18"
+                    font-weight="bold"
+                    font-family="Arial"
+                  >
+                    AWS
+                  </text>
+                </svg>
+              );
+              bg = "from-yellow-100 to-yellow-300";
+            } else if (group === "Azure") {
+              logo = (
+                <svg viewBox="0 0 48 48" width="48" height="48" fill="none">
+                  <rect width="48" height="48" rx="12" fill="#0078D4" />
+                  <polygon points="24,8 40,40 8,40" fill="#fff" />
+                </svg>
+              );
+              bg = "from-blue-100 to-blue-300";
+            } else if (group === "Google Cloud") {
+              logo = (
+                <svg viewBox="0 0 48 48" width="48" height="48" fill="none">
+                  <rect width="48" height="48" rx="12" fill="#fff" />
+                  <circle cx="24" cy="24" r="18" fill="#4285F4" />
+                  <path
+                    d="M24 12a12 12 0 0 1 9.8 19.2l-3.2-2.4A8 8 0 1 0 24 16v4l6 6h-8v-8z"
+                    fill="#fff"
+                  />
+                </svg>
+              );
+              bg = "from-yellow-100 to-red-200";
+            }
             return (
               <div
                 key={course.id}
@@ -185,8 +228,10 @@ export default component$(() => {
                   class={`mb-24 flex w-full max-w-xs flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 ${offset === 0 ? "shadow-2xl" : "shadow"}`}
                 >
                   <div class="mb-4 flex w-full items-center justify-center">
-                    <div class="flex h-32 w-32 items-center justify-center rounded-xl bg-gradient-to-br from-blue-200 to-purple-200 text-5xl font-bold text-blue-600">
-                      <span>{course.name[0]}</span>
+                    <div
+                      class={`flex h-32 w-32 items-center justify-center rounded-xl bg-gradient-to-br ${bg}`}
+                    >
+                      {logo}
                     </div>
                   </div>
                   <h2 class="mb-2 text-center text-2xl font-bold text-slate-800">
