@@ -251,7 +251,7 @@ export default component$(() => {
             );
           })}
         {/* Swipe indicator dots */}
-        <div class="absolute bottom-2 left-0 z-20 flex w-full justify-center gap-2">
+        <div class="absolute bottom-40 left-0 z-20 flex w-full justify-center gap-2">
           {[...Array(cardCount)].map((_, idx) => (
             <span
               key={idx}
