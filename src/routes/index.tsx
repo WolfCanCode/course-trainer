@@ -136,7 +136,7 @@ export default component$(() => {
   });
 
   return (
-    <div class="flex min-h-screen flex-col items-start justify-start px-2 pb-8">
+    <div class="flex max-h-screen flex-col items-start justify-start overflow-hidden px-2 pb-8 sm:max-h-full sm:min-h-screen">
       {/* Mobile group selector */}
       <div class="mx-auto mb-4 block w-full max-w-md sm:hidden">
         <div class="no-scrollbar flex gap-2 overflow-x-auto px-2 py-2">
@@ -154,7 +154,7 @@ export default component$(() => {
       {/* Mobile swipeable cards */}
       <div
         id="mobile-swipe-cards"
-        class="relative mx-auto block h-[80vh] w-full max-w-md overflow-hidden px-4 sm:hidden"
+        class="relative mx-auto block h-[70vh] w-full max-w-md overflow-hidden px-4 sm:hidden"
       >
         {courseGroups
           .find((g) => g.name === selectedGroup.value)
@@ -251,7 +251,7 @@ export default component$(() => {
             );
           })}
         {/* Swipe indicator dots */}
-        <div class="absolute bottom-40 left-0 z-20 flex w-full justify-center gap-2">
+        <div class="absolute bottom-20 left-0 z-20 flex w-full justify-center gap-2">
           {[...Array(cardCount)].map((_, idx) => (
             <span
               key={idx}
