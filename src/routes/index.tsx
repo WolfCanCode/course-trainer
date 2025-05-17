@@ -1,22 +1,91 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
-import { useSignal, useVisibleTask$, $ } from "@builder.io/qwik";
+import { useSignal, $, useVisibleTask$ } from "@builder.io/qwik";
 
 // Static data for course groups and courses
 export const courseGroups = [
   {
     name: "AWS",
     courses: [
-      { id: "aws-cloud-practitioner", name: "AWS Cloud Practitioner" },
-      { id: "aws-solutions-architect", name: "AWS Solutions Architect" },
+      {
+        id: "aws-cloud-practitioner",
+        name: "AWS Certified Cloud Practitioner",
+      },
+      {
+        id: "aws-solutions-architect",
+        name: "AWS Certified Solutions Architect – Associate",
+      },
+      { id: "aws-developer", name: "AWS Certified Developer – Associate" },
+      {
+        id: "aws-sysops",
+        name: "AWS Certified SysOps Administrator – Associate",
+      },
+      {
+        id: "aws-devops",
+        name: "AWS Certified DevOps Engineer – Professional",
+      },
+      { id: "aws-security", name: "AWS Certified Security – Specialty" },
+      {
+        id: "aws-advanced-networking",
+        name: "AWS Certified Advanced Networking – Specialty",
+      },
+      {
+        id: "aws-machine-learning",
+        name: "AWS Certified Machine Learning – Specialty",
+      },
     ],
   },
   {
     name: "Azure",
     courses: [
-      { id: "azure-fundamentals", name: "Azure Fundamentals" },
-      { id: "azure-administrator", name: "Azure Administrator" },
+      {
+        id: "azure-fundamentals",
+        name: "Microsoft Certified: Azure Fundamentals (AZ-900)",
+      },
+      {
+        id: "azure-administrator",
+        name: "Microsoft Certified: Azure Administrator Associate (AZ-104)",
+      },
+      {
+        id: "azure-developer",
+        name: "Microsoft Certified: Azure Developer Associate (AZ-204)",
+      },
+      {
+        id: "azure-solutions-architect",
+        name: "Microsoft Certified: Azure Solutions Architect Expert (AZ-305)",
+      },
+      {
+        id: "azure-security",
+        name: "Microsoft Certified: Azure Security Engineer Associate (AZ-500)",
+      },
+      {
+        id: "azure-ai",
+        name: "Microsoft Certified: Azure AI Engineer Associate (AI-102)",
+      },
+      {
+        id: "azure-data-engineer",
+        name: "Microsoft Certified: Azure Data Engineer Associate (DP-203)",
+      },
+    ],
+  },
+  {
+    name: "Google Cloud",
+    courses: [
+      { id: "gcp-cloud-digital-leader", name: "Google Cloud Digital Leader" },
+      {
+        id: "gcp-associate-cloud-engineer",
+        name: "Google Associate Cloud Engineer",
+      },
+      {
+        id: "gcp-professional-cloud-architect",
+        name: "Google Professional Cloud Architect",
+      },
+      { id: "gcp-data-engineer", name: "Google Professional Data Engineer" },
+      {
+        id: "gcp-security-engineer",
+        name: "Google Professional Cloud Security Engineer",
+      },
     ],
   },
   // Add more groups/courses as needed
@@ -37,6 +106,7 @@ export default component$(() => {
     current.value = 0;
   });
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     const container = document.getElementById("mobile-swipe-cards");
     if (!container) return;
