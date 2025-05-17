@@ -14,14 +14,17 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
 
 export default component$(() => {
   return (
-    <div class="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200">
-      <header class="mb-6 flex w-full items-center justify-between bg-white/80 px-6 py-4 shadow-sm">
-        <div class="text-2xl font-bold tracking-tight text-blue-700">
+    <div class="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-purple-100">
+      <header class="fixed top-0 left-0 z-50 flex w-full items-center justify-between bg-white/80 px-6 py-4 shadow-sm">
+        <a
+          href="/"
+          class="text-2xl font-bold tracking-tight text-blue-700 hover:underline focus:outline-none"
+        >
           Course Trainer
-        </div>
+        </a>
         {/* Optionally add language switcher or user info here */}
       </header>
-      <main class="mx-auto max-w-5xl px-2">
+      <main class="mx-auto max-w-5xl pt-18">
         <Slot />
       </main>
     </div>
