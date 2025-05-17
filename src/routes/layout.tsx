@@ -58,9 +58,9 @@ export const head: DocumentHead = {
     },
   ],
   links: [
-    { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+    { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
     { rel: "manifest", href: "/manifest.json" },
-    // { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+    { rel: "apple-touch-icon", href: "/icon-192.png" },
   ],
 };
 
