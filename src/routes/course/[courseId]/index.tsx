@@ -108,7 +108,7 @@ export default component$(() => {
   }
 
   return (
-    <div class="flex min-h-screen items-start justify-start bg-gradient-to-br from-indigo-100 via-white to-purple-100 px-2 py-8">
+    <div class="flex min-h-screen items-start justify-start px-2 py-8">
       <div class="mb-6 flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
         <div class="mb-4 flex w-full items-center justify-between">
           <div class="flex items-center gap-2">
