@@ -14,8 +14,8 @@ export const courseGroups = [
   {
     name: "Azure",
     courses: [
-      { id: "azure-fundamentals", name: "AWS Fundamentals" },
-      { id: "azure-administrator", name: "AWS Administrator" },
+      { id: "azure-fundamentals", name: "Azure Fundamentals" },
+      { id: "azure-administrator", name: "Azure Administrator" },
     ],
   },
   // Add more groups/courses as needed
