@@ -9,7 +9,7 @@ export const Footer = component$(() => {
     <footer class="safe-area-pb mt-auto flex w-full flex-col items-center gap-2 py-8 text-center text-xs text-gray-500 sm:text-sm">
       <span>
         <strong>Build</strong>{" "}
-        <span class="font-mono text-xs">v1.5 {BUILD_VERSION}</span>
+        <span class="font-mono text-xs">v1.0 {BUILD_VERSION}</span>
       </span>
       <span>
         <strong>Model</strong>{" "}
