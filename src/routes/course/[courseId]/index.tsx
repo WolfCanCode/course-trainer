@@ -1,8 +1,11 @@
 import { $, component$, useSignal, useStore } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { getQuestion, type QuizQuestion } from "./quiz/get-question";
+import { QuestionDisplay } from "../../../components/quiz/QuestionDisplay";
+import { ResultsReview } from "../../../components/quiz/ResultsReview";
 
 const BATCH_SIZE = 10;
+const PREFETCH_OFFSET = 6; // Prefetch when 6 questions left
 
 const courseNames: Record<string, string> = {
   "aws-cloud-practitioner": "AWS Cloud Practitioner",
@@ -27,6 +30,7 @@ export default component$(() => {
   const submitted = useSignal(false);
   const loading = useSignal(false);
   const started = useSignal(false);
+  const error = useSignal<string | null>(null);
 
   const state = useStore<{
     questions: QuizQuestion[];
@@ -50,10 +54,11 @@ export default component$(() => {
     const topic = courseId.replace(/-/g, " ");
     const count = BATCH_SIZE;
     try {
+      error.value = null;
       return await getQuestion(topic, count, exclude);
     } catch (err) {
       noMoreQuestions.value = true;
-      // Optionally, set an error state here
+      error.value = "Failed to fetch questions. Please try again later.";
       return [];
     }
   });
@@ -68,6 +73,7 @@ export default component$(() => {
     prefetched.value = null;
     noMoreQuestions.value = false;
     currentQuestion.value = 0;
+    error.value = null;
     const initialQuestions = await fetchQuestions();
     state.questions.push(...initialQuestions);
     loading.value = false;
@@ -93,13 +99,13 @@ export default component$(() => {
     (idx) => state.feedback[idx]?.correct,
   ).length;
 
-  // Prefetch next batch when reaching question 5 of the current batch
+  // Prefetch next batch when reaching question PREFETCH_OFFSET of the current batch
   if (
     !submitted.value &&
     started.value &&
     !loading.value &&
     state.questions.length > 0 &&
-    currentQuestion.value === state.questions.length - 6 &&
+    currentQuestion.value === state.questions.length - PREFETCH_OFFSET &&
     !prefetched.value &&
     !noMoreQuestions.value &&
     !prefetching.value
@@ -203,51 +209,11 @@ export default component$(() => {
             >
               Back to Home
             </button>
-
-            {/* Review Answers Section */}
-            <div class="mt-4 w-full">
-              <h3 class="mb-4 text-lg font-bold text-slate-800">
-                Review Answers
-              </h3>
-              <div class="flex flex-col gap-6">
-                {state.questions.map((q, idx) =>
-                  state.answers[idx] ? (
-                    <div
-                      key={idx}
-                      class={`rounded-xl border bg-slate-50 p-4 shadow-sm ${state.feedback[idx]?.correct === true ? "border-emerald-500" : state.feedback[idx]?.correct === false ? "border-rose-500" : "border-slate-200"}`}
-                    >
-                      <div class="mb-2 flex flex-row items-start gap-2">
-                        <div class="text-base leading-snug font-semibold text-slate-800">
-                          {idx + 1}. {q.question}
-                        </div>
-                      </div>
-                      <div class="mb-1 text-sm">
-                        <span class="font-medium">Your answer:</span>{" "}
-                        <span
-                          class={
-                            state.feedback[idx]?.correct
-                              ? "text-green-700"
-                              : "text-red-700"
-                          }
-                        >
-                          {state.answers[idx]}
-                        </span>
-                      </div>
-                      <div class="mb-1 text-sm">
-                        <span class="font-medium">Correct answer:</span>{" "}
-                        <span class="text-blue-700">{q.correctAnswer}</span>
-                      </div>
-                      {q.explanation && (
-                        <div class="mt-2 rounded border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
-                          <strong>Explanation:</strong>{" "}
-                          <span>{q.explanation}</span>
-                        </div>
-                      )}
-                    </div>
-                  ) : null,
-                )}
-              </div>
-            </div>
+            <ResultsReview
+              questions={state.questions}
+              answers={state.answers}
+              feedback={state.feedback}
+            />
             {/* Next 10 Questions button after submit if more questions available */}
             {noMoreQuestions.value &&
               currentQuestion.value === state.questions.length && (
@@ -263,6 +229,11 @@ export default component$(() => {
         {/* Quiz UI (only show if not submitted) */}
         {!submitted.value && (
           <div class="w-full">
+            {error.value && (
+              <div class="mb-4 rounded border border-red-400 bg-red-50 px-4 py-3 text-red-700">
+                {error.value}
+              </div>
+            )}
             {!started.value && (
               <button
                 class="w-full rounded-lg bg-blue-600 px-8 py-3 text-lg font-semibold text-white shadow transition hover:bg-blue-700 disabled:opacity-60"
@@ -300,48 +271,15 @@ export default component$(() => {
                 <div class="mb-4 text-sm font-medium text-purple-700">
                   Question {currentQuestion.value + 1}
                 </div>
-                <div class="mb-4 text-lg font-bold text-slate-800">
-                  {state.questions[currentQuestion.value].question}
-                </div>
-                <div class="mb-8 flex flex-col gap-3">
-                  {state.questions[currentQuestion.value].options.map(
-                    (opt: string) => (
-                      <button
-                        key={opt}
-                        type="button"
-                        disabled={submitted.value}
-                        onClick$={() =>
-                          (state.answers[currentQuestion.value] = opt)
-                        }
-                        class={`flex w-full items-center justify-start rounded-xl border px-4 py-3 text-base font-medium transition-all ${
-                          state.answers[currentQuestion.value] === opt
-                            ? "border-purple-500 bg-purple-50 text-purple-900 shadow"
-                            : "border-slate-200 bg-white text-slate-700 hover:border-blue-400 hover:bg-blue-50"
-                        } ${submitted.value ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
-                      >
-                        <span class="flex-1 text-left">{opt}</span>
-                        {state.answers[currentQuestion.value] === opt && (
-                          <span class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-purple-500 text-white">
-                            <svg
-                              width="16"
-                              height="16"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                stroke="currentColor"
-                                stroke-width="3"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                          </span>
-                        )}
-                      </button>
-                    ),
+                <QuestionDisplay
+                  question={state.questions[currentQuestion.value].question}
+                  options={state.questions[currentQuestion.value].options}
+                  selected={state.answers[currentQuestion.value]}
+                  onSelect$={$(
+                    (opt) => (state.answers[currentQuestion.value] = opt),
                   )}
-                </div>
+                  disabled={submitted.value}
+                />
                 {state.questions.length > 0 &&
                   currentQuestion.value < state.questions.length && (
                     <div class="mt-6">
