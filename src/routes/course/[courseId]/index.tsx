@@ -64,24 +64,6 @@ export default component$(() => {
     loading.value = false;
   });
 
-  const fetchNextBatch = $(async () => {
-    loadingNext.value = true;
-    submitted.value = false;
-    state.feedback = [];
-    const topic = courseId.replace(/-/g, " ");
-    const exclude = state.questions.map((q) => q.question);
-    const remaining = totalQuestions - state.questions.length;
-    const count = Math.min(BATCH_SIZE, remaining);
-    if (count <= 0) {
-      loadingNext.value = false;
-      return;
-    }
-    const nextQuestions = await getQuestion(topic, count, exclude);
-    state.questions.push(...nextQuestions);
-    state.batch++;
-    loadingNext.value = false;
-  });
-
   const handleSubmit = $(() => {
     submitted.value = true;
     state.feedback = state.questions.map((q, idx) => ({
@@ -102,7 +84,7 @@ export default component$(() => {
     <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-purple-100 px-2 py-8">
       <div class="mx-auto w-full max-w-md">
         <div class="mb-6 flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
-          <div class="mb-4 flex w-full items-center justify-between">
+          <div class="mb-4 flex w-full items-center justify-start gap-4">
             <button
               type="button"
               class="text-slate-400 transition hover:text-blue-600"
@@ -122,36 +104,9 @@ export default component$(() => {
             <div class="truncate text-lg font-semibold text-slate-800">
               {name}
             </div>
-            <div class="flex items-center gap-1 text-sm text-slate-500">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-                <path
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  d="M12 6v6l4 2"
-                />
-              </svg>
-              2:00
-            </div>
           </div>
-          <div class="mb-6 h-1 w-full rounded-full bg-slate-200">
-            <div
-              class="h-1 rounded-full bg-blue-500 transition-all"
-              style={{
-                width: `${((currentQuestion.value + 1) / state.questions.length) * 100 || 0}%`,
-              }}
-            ></div>
-          </div>
-          <h2 class="mb-2 text-center text-xl font-bold text-blue-700">
-            {name}
-          </h2>
+
+          <div class="mb-6 h-1 w-full rounded-full bg-blue-500"></div>
           <p class="mb-6 text-center text-slate-600">{desc}</p>
 
           {/* Results screen */}
@@ -179,11 +134,93 @@ export default component$(() => {
               </div>
               <button
                 type="button"
-                class="w-full rounded-lg bg-blue-600 px-8 py-3 text-lg font-semibold text-white shadow transition hover:bg-blue-700"
+                class="mb-8 w-full rounded-lg bg-blue-600 px-8 py-3 text-lg font-semibold text-white shadow transition hover:bg-blue-700"
                 onClick$={() => (window.location.href = "/")}
               >
                 Back to Home
               </button>
+
+              {/* Review Answers Section */}
+              <div class="mt-4 w-full">
+                <h3 class="mb-4 text-lg font-bold text-slate-800">
+                  Review Answers
+                </h3>
+                <div class="flex flex-col gap-6">
+                  {state.questions.map((q, idx) => (
+                    <div
+                      key={idx}
+                      class={`rounded-xl border bg-slate-50 p-4 shadow-sm ${state.feedback[idx]?.correct === true ? "border-emerald-500" : state.feedback[idx]?.correct === false ? "border-rose-500" : "border-slate-200"}`}
+                    >
+                      <div class="mb-2 flex flex-row items-start gap-2">
+                        <div class="text-base leading-snug font-semibold text-slate-800">
+                          {idx + 1}. {q.question}
+                        </div>
+                      </div>
+                      <div class="mb-1 text-sm">
+                        <span class="font-medium">Your answer:</span>{" "}
+                        <span
+                          class={
+                            state.feedback[idx]?.correct
+                              ? "text-green-700"
+                              : "text-red-700"
+                          }
+                        >
+                          {state.answers[idx] || <em>None</em>}
+                        </span>
+                      </div>
+                      <div class="mb-1 text-sm">
+                        <span class="font-medium">Correct answer:</span>{" "}
+                        <span class="text-blue-700">{q.correctAnswer}</span>
+                      </div>
+                      {q.explanation && (
+                        <div class="mt-2 rounded border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
+                          <strong>Explanation:</strong>{" "}
+                          <span>{q.explanation}</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Next 10 Questions button after submit if more questions available */}
+              {state.questions.length < totalQuestions && (
+                <button
+                  type="button"
+                  class="mt-8 w-full rounded-lg bg-slate-700 px-8 py-3 font-semibold text-white shadow transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={loadingNext.value}
+                  onClick$={async () => {
+                    // Reset quiz state as if starting fresh
+                    loading.value = true;
+                    started.value = true;
+                    submitted.value = false;
+                    state.feedback = [];
+                    state.answers = {};
+                    // Exclude all previous questions
+                    const exclude = state.questions.map((q) => q.question);
+                    const topic = courseId.replace(/-/g, " ");
+                    const remaining = totalQuestions - state.questions.length;
+                    const count = Math.min(BATCH_SIZE, remaining);
+                    if (count <= 0) {
+                      loading.value = false;
+                      return;
+                    }
+                    const nextQuestions = await getQuestion(
+                      topic,
+                      count,
+                      exclude,
+                    );
+                    state.questions.push(...nextQuestions);
+                    state.batch++;
+                    loading.value = false;
+                    // Start at the first new question
+                    currentQuestion.value = state.questions.length - count;
+                  }}
+                >
+                  {loadingNext.value
+                    ? "Loading..."
+                    : `Next ${Math.min(BATCH_SIZE, totalQuestions - state.questions.length)} Questions`}
+                </button>
+              )}
             </div>
           )}
 
@@ -228,13 +265,13 @@ export default component$(() => {
                             onClick$={() =>
                               (state.answers[currentQuestion.value] = opt)
                             }
-                            class={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-base font-medium transition-all ${
+                            class={`flex w-full items-center justify-start rounded-xl border px-4 py-3 text-base font-medium transition-all ${
                               state.answers[currentQuestion.value] === opt
                                 ? "border-purple-500 bg-purple-50 text-purple-900 shadow"
                                 : "border-slate-200 bg-white text-slate-700 hover:border-blue-400 hover:bg-blue-50"
                             } ${submitted.value ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
                           >
-                            <span>{opt}</span>
+                            <span class="flex-1 text-left">{opt}</span>
                             {state.answers[currentQuestion.value] === opt && (
                               <span class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-purple-500 text-white">
                                 <svg
@@ -308,25 +345,6 @@ export default component$(() => {
                         </button>
                       )}
                     </div>
-                    {state.questions.length < totalQuestions &&
-                      currentQuestion.value === state.questions.length - 1 && (
-                        <button
-                          type="button"
-                          class="mt-4 w-full rounded-lg bg-slate-700 px-8 py-3 font-semibold text-white shadow transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
-                          disabled={loadingNext.value}
-                          onClick$={fetchNextBatch}
-                        >
-                          {loadingNext.value
-                            ? "Loading..."
-                            : `Next ${Math.min(BATCH_SIZE, totalQuestions - state.questions.length)} Questions`}
-                        </button>
-                      )}
-                    {state.questions.length >= totalQuestions &&
-                      currentQuestion.value === state.questions.length - 1 && (
-                        <div class="mt-8 text-center font-semibold text-blue-700">
-                          <strong>All questions loaded.</strong>
-                        </div>
-                      )}
                   </div>
                 )}
             </>
