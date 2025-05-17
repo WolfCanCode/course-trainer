@@ -154,7 +154,7 @@ export default component$(() => {
       {/* Mobile swipeable cards */}
       <div
         id="mobile-swipe-cards"
-        class="relative mx-auto block h-[70vh] w-full max-w-md overflow-hidden px-4 sm:hidden"
+        class="animate-fade-in relative mx-auto block h-[70vh] w-full max-w-md overflow-hidden px-4 sm:hidden"
       >
         {courseGroups
           .find((g) => g.name === selectedGroup.value)

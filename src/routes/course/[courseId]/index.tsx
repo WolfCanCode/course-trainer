@@ -1,6 +1,6 @@
 import { $, component$, useSignal, useStore } from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
-import { getQuestion, type QuizQuestion } from "./quiz/get-question";
+import { getQuestion, type QuizQuestion } from "./get-question";
 import { QuestionDisplay } from "../../../components/quiz/QuestionDisplay";
 import { ResultsReview } from "../../../components/quiz/ResultsReview";
 
@@ -12,6 +12,16 @@ const courseNames: Record<string, string> = {
   "aws-solutions-architect": "AWS Solutions Architect",
   "azure-fundamentals": "Azure Fundamentals",
   "azure-administrator": "Azure Administrator",
+  "azure-developer": "Azure Developer",
+  "azure-solutions-architect": "Azure Solutions Architect",
+  "azure-security": "Azure Security",
+  "azure-ai": "Azure AI",
+  "azure-data-engineer": "Azure Data Engineer",
+  "gcp-cloud-digital-leader": "GCP Cloud Digital Leader",
+  "gcp-associate-cloud-engineer": "GCP Associate Cloud Engineer",
+  "gcp-professional-cloud-architect": "GCP Professional Cloud Architect",
+  "gcp-data-engineer": "GCP Data Engineer",
+  "gcp-security-engineer": "GCP Security Engineer",
 };
 const courseDescriptions: Record<string, string> = {
   "aws-cloud-practitioner":
@@ -22,6 +32,20 @@ const courseDescriptions: Record<string, string> = {
     "Learn the basics of Microsoft Azure and cloud computing for the Azure Fundamentals exam.",
   "azure-administrator":
     "Get ready for the Azure Administrator certification with hands-on cloud management skills.",
+  "azure-developer":
+    "Master Azure development and cloud services for the Azure Developer certification.",
+  "azure-solutions-architect":
+    "Prepare for the Azure Solutions Architect certification with cloud architecture and design skills.",
+  "azure-security":
+    "Get ready for the Azure Security certification with cloud security and compliance skills.",
+  "azure-ai":
+    "Master Azure AI and machine learning for the Azure AI certification.",
+  "azure-data-engineer":
+    "Prepare for the Azure Data Engineer certification with data management and analytics skills.",
+  "gcp-cloud-digital-leader":
+    "Get ready for the GCP Cloud Digital Leader certification with cloud leadership and strategy skills.",
+  "gcp-associate-cloud-engineer":
+    "Master GCP cloud engineering and infrastructure for the GCP Associate Cloud Engineer certification.",
 };
 
 export default component$(() => {
@@ -121,8 +145,8 @@ export default component$(() => {
   }
 
   return (
-    <div class="flex min-h-screen items-start justify-start px-2 py-8">
-      <div class="mb-6 flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
+    <div class="animate-fade-in flex min-h-screen items-start justify-start px-4 py-8">
+      <div class="mb-6 flex w-full flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
         <div class="mb-4 flex w-full items-center justify-between">
           <div class="flex items-center gap-2">
             <button
@@ -154,7 +178,6 @@ export default component$(() => {
               disabled={Object.keys(state.answers).length === 0}
               onClick$={() => handleSubmit()}
             >
-              Submit
               <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
                 <circle
                   cx="12"
@@ -176,8 +199,10 @@ export default component$(() => {
           )}
         </div>
 
-        <div class="mb-6 h-1 w-full rounded-full bg-blue-500"></div>
-        <p class="mb-6 text-center text-slate-600">{desc}</p>
+        <div class="mb-6 h-[0.5px] w-full rounded-full bg-gray-300"></div>
+        {!started.value && (
+          <p class="mb-6 text-center text-slate-600">{desc}</p>
+        )}
 
         {/* Results screen */}
         {submitted.value && (
@@ -240,7 +265,7 @@ export default component$(() => {
                 onClick$={fetchInitialQuestions}
                 disabled={loading.value}
               >
-                {loading.value ? "Loading..." : "Start Quiz"}
+                Start Quiz"
               </button>
             )}
             {started.value && loading.value && (
