@@ -1,4 +1,5 @@
 import { component$, Slot } from "@builder.io/qwik";
+import { Footer } from "../components/Footer";
 import type { RequestHandler } from "@builder.io/qwik-city";
 
 export const onGet: RequestHandler = async ({ cacheControl }) => {
@@ -14,7 +15,7 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
 
 export default component$(() => {
   return (
-    <div class="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-purple-100">
+    <div class="flex min-h-screen flex-col bg-gradient-to-br from-indigo-100 via-white to-purple-100">
       <header class="fixed top-0 left-0 z-50 flex w-full items-center justify-between bg-white/80 px-6 py-4 shadow-sm">
         <a
           href="/"
@@ -24,9 +25,10 @@ export default component$(() => {
         </a>
         {/* Optionally add language switcher or user info here */}
       </header>
-      <main class="mx-auto max-w-5xl pt-18">
+      <main class="mx-auto flex w-full max-w-5xl flex-1 flex-col pt-18">
         <Slot />
       </main>
+      <Footer />
     </div>
   );
 });

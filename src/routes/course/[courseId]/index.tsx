@@ -3,50 +3,10 @@ import { useLocation } from "@builder.io/qwik-city";
 import { getQuestion, type QuizQuestion } from "./get-question";
 import { QuestionDisplay } from "../../../components/quiz/QuestionDisplay";
 import { ResultsReview } from "../../../components/quiz/ResultsReview";
+import { allCourses } from "../../../lib/course-data";
 
 const BATCH_SIZE = 10;
 const PREFETCH_OFFSET = 6; // Prefetch when 6 questions left
-
-const courseNames: Record<string, string> = {
-  "aws-cloud-practitioner": "AWS Cloud Practitioner",
-  "aws-solutions-architect": "AWS Solutions Architect",
-  "azure-fundamentals": "Azure Fundamentals",
-  "azure-administrator": "Azure Administrator",
-  "azure-developer": "Azure Developer",
-  "azure-solutions-architect": "Azure Solutions Architect",
-  "azure-security": "Azure Security",
-  "azure-ai": "Azure AI",
-  "azure-data-engineer": "Azure Data Engineer",
-  "gcp-cloud-digital-leader": "GCP Cloud Digital Leader",
-  "gcp-associate-cloud-engineer": "GCP Associate Cloud Engineer",
-  "gcp-professional-cloud-architect": "GCP Professional Cloud Architect",
-  "gcp-data-engineer": "GCP Data Engineer",
-  "gcp-security-engineer": "GCP Security Engineer",
-};
-const courseDescriptions: Record<string, string> = {
-  "aws-cloud-practitioner":
-    "Prepare for the AWS Cloud Practitioner certification with foundational cloud concepts and AWS services.",
-  "aws-solutions-architect":
-    "Master AWS architecture and design for the Solutions Architect certification.",
-  "azure-fundamentals":
-    "Learn the basics of Microsoft Azure and cloud computing for the Azure Fundamentals exam.",
-  "azure-administrator":
-    "Get ready for the Azure Administrator certification with hands-on cloud management skills.",
-  "azure-developer":
-    "Master Azure development and cloud services for the Azure Developer certification.",
-  "azure-solutions-architect":
-    "Prepare for the Azure Solutions Architect certification with cloud architecture and design skills.",
-  "azure-security":
-    "Get ready for the Azure Security certification with cloud security and compliance skills.",
-  "azure-ai":
-    "Master Azure AI and machine learning for the Azure AI certification.",
-  "azure-data-engineer":
-    "Prepare for the Azure Data Engineer certification with data management and analytics skills.",
-  "gcp-cloud-digital-leader":
-    "Get ready for the GCP Cloud Digital Leader certification with cloud leadership and strategy skills.",
-  "gcp-associate-cloud-engineer":
-    "Master GCP cloud engineering and infrastructure for the GCP Associate Cloud Engineer certification.",
-};
 
 export default component$(() => {
   const loc = useLocation();
@@ -111,10 +71,9 @@ export default component$(() => {
     }));
   });
 
-  const name = courseNames[courseId] || courseId;
-
-  const desc =
-    courseDescriptions[courseId] || "Start your certification journey.";
+  const course = allCourses.find((c) => c.id === courseId);
+  const name = course?.name || courseId;
+  const desc = course?.description || "Start your certification journey.";
 
   // Helper to count correct answers and answered questions
   const answeredIndexes = Object.keys(state.answers).map(Number);
@@ -145,10 +104,10 @@ export default component$(() => {
   }
 
   return (
-    <div class="animate-fade-in flex min-h-screen items-start justify-start px-4 py-8">
+    <div class="animate-fade-in flex items-start justify-start px-4 pt-2 pb-8">
       <div class="mb-6 flex w-full flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
         <div class="mb-4 flex w-full items-center justify-between">
-          <div class="flex items-center gap-2">
+          <div class="flex w-full items-center gap-2">
             <button
               type="button"
               class="text-slate-400 transition hover:text-blue-600"
@@ -165,38 +124,14 @@ export default component$(() => {
                 />
               </svg>
             </button>
-            <div class="truncate text-lg font-semibold text-slate-800">
-              {name}
+            <div
+              class="marquee w-full text-lg font-semibold text-slate-800"
+              title={name}
+            >
+              <span class="marquee-content">{name}</span>
             </div>
           </div>
           {/* Submit All icon button in header */}
-          {started.value && !loading.value && !submitted.value && (
-            <button
-              type="button"
-              class="ml-2 rounded-full bg-emerald-100 p-2 transition hover:bg-emerald-200 disabled:cursor-not-allowed disabled:opacity-50"
-              title="Submit All"
-              disabled={Object.keys(state.answers).length === 0}
-              onClick$={() => handleSubmit()}
-            >
-              <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="#059669"
-                  stroke-width="2"
-                  fill="#34d399"
-                />
-                <path
-                  d="M8 13l2.5 2.5L16 10"
-                  stroke="#fff"
-                  stroke-width="2.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </button>
-          )}
         </div>
 
         <div class="mb-6 h-[0.5px] w-full rounded-full bg-gray-300"></div>
@@ -265,7 +200,7 @@ export default component$(() => {
                 onClick$={fetchInitialQuestions}
                 disabled={loading.value}
               >
-                Start Quiz"
+                Start Quiz
               </button>
             )}
             {started.value && loading.value && (
@@ -291,10 +226,24 @@ export default component$(() => {
                 </div>
               </div>
             )}
+
             {started.value && !loading.value && state.questions.length > 0 && (
               <div class="w-full">
                 <div class="mb-4 text-sm font-medium text-purple-700">
-                  Question {currentQuestion.value + 1}
+                  <div class="flex items-center justify-between">
+                    <div>Question {currentQuestion.value + 1}</div>
+                    {started.value && !loading.value && !submitted.value && (
+                      <button
+                        type="button"
+                        class="ml-2 border-none font-bold text-green-800 transition disabled:cursor-not-allowed disabled:opacity-50"
+                        title="Submit All"
+                        disabled={Object.keys(state.answers).length === 0}
+                        onClick$={() => handleSubmit()}
+                      >
+                        Check Answers
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <QuestionDisplay
                   question={state.questions[currentQuestion.value].question}
