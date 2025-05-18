@@ -1,4 +1,10 @@
-import { $, component$, useSignal, useStore } from "@builder.io/qwik";
+import {
+  $,
+  component$,
+  useSignal,
+  useStore,
+  useVisibleTask$,
+} from "@builder.io/qwik";
 import { useLocation } from "@builder.io/qwik-city";
 import { getQuestion, type QuizQuestion } from "./get-question";
 import { QuestionDisplay } from "../../../components/quiz/QuestionDisplay";
@@ -33,6 +39,14 @@ export default component$(() => {
   const prefetched = useSignal<QuizQuestion[] | null>(null);
   const noMoreQuestions = useSignal(false);
   const prefetching = useSignal(false);
+
+  const instantFeedback = useSignal<null | {
+    correct: boolean;
+    explanation?: string;
+    correctAnswer: string;
+  }>(null);
+
+  const checked = useSignal(false);
 
   const fetchQuestions = $(async (exclude: string[] = []) => {
     const topic = courseId.replace(/-/g, " ");
@@ -102,6 +116,12 @@ export default component$(() => {
       }
     });
   }
+
+  useVisibleTask$(({ track }: { track: any }) => {
+    track(() => currentQuestion.value);
+    checked.value = false;
+    instantFeedback.value = null;
+  });
 
   return (
     <div class="animate-fade-in flex items-start justify-start px-4 pt-2 pb-8">
@@ -232,17 +252,15 @@ export default component$(() => {
                 <div class="mb-4 text-sm font-medium text-purple-700">
                   <div class="flex items-center justify-between">
                     <div>Question {currentQuestion.value + 1}</div>
-                    {started.value && !loading.value && !submitted.value && (
-                      <button
-                        type="button"
-                        class="ml-2 border-none font-bold text-green-800 transition disabled:cursor-not-allowed disabled:opacity-50"
-                        title="Submit All"
-                        disabled={Object.keys(state.answers).length === 0}
-                        onClick$={() => handleSubmit()}
-                      >
-                        Check Answers
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      class="ml-2 border-none font-bold text-green-800 transition disabled:cursor-not-allowed disabled:opacity-50"
+                      title="Submit All"
+                      disabled={Object.keys(state.answers).length === 0}
+                      onClick$={() => handleSubmit()}
+                    >
+                      Finish
+                    </button>
                   </div>
                 </div>
                 <QuestionDisplay
@@ -257,55 +275,67 @@ export default component$(() => {
                 {state.questions.length > 0 &&
                   currentQuestion.value < state.questions.length && (
                     <div class="mt-6">
-                      <button
-                        type="button"
-                        class="flex w-full items-center justify-center rounded-lg bg-black px-8 py-3 text-lg font-semibold text-white shadow transition hover:bg-slate-800 disabled:opacity-60"
-                        disabled={
-                          !state.answers[currentQuestion.value] ||
-                          (currentQuestion.value ===
-                            state.questions.length - 1 &&
-                            prefetching.value)
-                        }
-                        onClick$={() => {
-                          if (
-                            currentQuestion.value ===
-                              state.questions.length - 1 &&
-                            prefetched.value
-                          ) {
-                            state.questions.push(...prefetched.value);
-                            prefetched.value = null;
-                            currentQuestion.value++;
-                          } else {
-                            currentQuestion.value++;
-                          }
-                        }}
-                      >
-                        {currentQuestion.value === state.questions.length - 1 &&
-                        prefetching.value ? (
-                          <svg
-                            class="mr-2 h-5 w-5 animate-spin text-white"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              class="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              stroke-width="4"
-                            ></circle>
-                            <path
-                              class="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8v8z"
-                            ></path>
-                          </svg>
-                        ) : null}
-                        Next &rarr;
-                      </button>
+                      {!checked.value ? (
+                        <button
+                          type="button"
+                          class="flex w-full items-center justify-center rounded-lg bg-black px-8 py-3 text-lg font-semibold text-white shadow transition hover:bg-slate-800 disabled:opacity-60"
+                          disabled={!state.answers[currentQuestion.value]}
+                          onClick$={() => {
+                            // Show feedback
+                            const q = state.questions[currentQuestion.value];
+                            const userAnswer =
+                              state.answers[currentQuestion.value];
+                            const correct = userAnswer === q.correctAnswer;
+                            instantFeedback.value = {
+                              correct,
+                              explanation: q.explanation,
+                              correctAnswer: q.correctAnswer,
+                            };
+                            checked.value = true;
+                          }}
+                        >
+                          Check
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          class="flex w-full items-center justify-center rounded-lg bg-blue-600 px-8 py-3 text-lg font-semibold text-white shadow transition hover:bg-blue-700 disabled:opacity-60"
+                          onClick$={() => {
+                            instantFeedback.value = null;
+                            checked.value = false;
+                            if (
+                              currentQuestion.value ===
+                                state.questions.length - 1 &&
+                              prefetched.value
+                            ) {
+                              state.questions.push(...prefetched.value);
+                              prefetched.value = null;
+                              currentQuestion.value++;
+                            } else {
+                              currentQuestion.value++;
+                            }
+                          }}
+                        >
+                          Next &rarr;
+                        </button>
+                      )}
                     </div>
                   )}
+                {checked.value && instantFeedback.value && (
+                  <div
+                    class={`mt-4 rounded-lg border px-4 py-3 text-base font-semibold ${instantFeedback.value.correct ? "border-green-400 bg-green-50 text-green-800" : "border-red-400 bg-red-50 text-red-800"}`}
+                  >
+                    {instantFeedback.value.correct
+                      ? "Correct!"
+                      : `Incorrect. Correct answer: ${instantFeedback.value.correctAnswer}`}
+                    {instantFeedback.value.explanation && (
+                      <div class="mt-1 text-sm font-normal text-slate-700">
+                        <strong>Explanation:</strong>{" "}
+                        {instantFeedback.value.explanation}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
