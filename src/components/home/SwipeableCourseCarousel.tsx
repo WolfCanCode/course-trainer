@@ -1,13 +1,16 @@
 import { component$, QRL, useVisibleTask$, useSignal } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
+import ImgAws from "../../media/img/aws.png?jsx";
+import ImgAzure from "../../media/img/azure.png?jsx";
+import ImgGcp from "../../media/img/gcp.png?jsx";
 
 interface Course {
   id: string;
   name: string;
   description: string;
   group: string;
-  logo: any;
-  bg: string;
+  logoKey: string;
+  bgKey: string;
 }
 
 interface SwipeableCourseCarouselProps {
@@ -20,6 +23,7 @@ export const SwipeableCourseCarousel = component$<SwipeableCourseCarouselProps>(
   ({ courses, current, onCurrentChange$ }) => {
     const touchStartX = useSignal(0);
     const touchEndX = useSignal(0);
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(() => {
       const container = document.getElementById("mobile-swipe-cards");
       if (!container) return;
@@ -47,6 +51,18 @@ export const SwipeableCourseCarousel = component$<SwipeableCourseCarouselProps>(
         container.removeEventListener("touchend", handleTouchEnd);
       };
     });
+    const logoMap: Record<string, any> = {
+      AWS: <ImgAws class="h-20 w-20 object-contain sm:h-24 sm:w-24" />,
+      Azure: <ImgAzure class="h-20 w-20 object-contain sm:h-24 sm:w-24" />,
+      "Google Cloud": (
+        <ImgGcp class="h-20 w-20 object-contain sm:h-24 sm:w-24" />
+      ),
+    };
+    const bgMap: Record<string, string> = {
+      AWS: "from-yellow-100 to-yellow-300",
+      Azure: "from-blue-100 to-blue-300",
+      "Google Cloud": "from-yellow-100 to-red-200",
+    };
     return (
       <div
         id="mobile-swipe-cards"
@@ -81,9 +97,9 @@ export const SwipeableCourseCarousel = component$<SwipeableCourseCarouselProps>(
                 <div class="flex w-full flex-1 flex-col items-center">
                   <div class="mb-4 flex w-full items-center justify-center">
                     <div
-                      class={`flex h-20 w-20 items-center justify-center rounded-xl bg-gradient-to-br sm:h-24 sm:w-24 ${course.bg}`}
+                      class={`flex h-20 w-20 items-center justify-center rounded-xl bg-gradient-to-br sm:h-24 sm:w-24 ${bgMap[course.bgKey as string]}`}
                     >
-                      {course.logo}
+                      {logoMap[course.logoKey as string]}
                     </div>
                   </div>
                   <h2 class="mb-2 text-center text-2xl font-bold text-slate-800 sm:text-3xl">
