@@ -111,23 +111,25 @@ export default component$(() => {
                 style={style}
               >
                 <div
-                  class={`mb-24 flex w-full max-w-xs flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 ${offset === 0 ? "shadow-2xl" : "shadow"}`}
+                  class={`mb-24 flex w-full max-w-xs flex-1 flex-col items-center rounded-2xl border border-slate-200 bg-white p-4 sm:max-w-sm sm:p-6 ${offset === 0 ? "shadow-2xl" : "shadow"} h-[70vh] max-h-[500px] min-h-[350px]`}
                 >
-                  <div class="mb-4 flex w-full items-center justify-center">
-                    <div
-                      class={`flex h-32 w-32 items-center justify-center rounded-xl bg-gradient-to-br ${bg}`}
-                    >
-                      {logo}
+                  <div class="flex w-full flex-1 flex-col items-center">
+                    <div class="mb-4 flex w-full items-center justify-center">
+                      <div
+                        class={`flex h-20 w-20 items-center justify-center rounded-xl bg-gradient-to-br sm:h-24 sm:w-24 ${bg}`}
+                      >
+                        {logo}
+                      </div>
                     </div>
+                    <h2 class="mb-2 text-center text-2xl font-bold text-slate-800 sm:text-3xl">
+                      {course.name}
+                    </h2>
+                    <p class="mb-6 line-clamp-3 text-center text-base text-slate-600 sm:text-lg">
+                      {course.description}
+                    </p>
                   </div>
-                  <h2 class="mb-2 text-center text-2xl font-bold text-slate-800">
-                    {course.name}
-                  </h2>
-                  <p class="mb-6 line-clamp-3 text-center text-base text-slate-600">
-                    {course.description}
-                  </p>
-                  <Link href={`/course/${course.id}/`} class="w-full">
-                    <button class="w-full rounded-lg bg-blue-600 px-8 py-3 text-lg font-semibold text-white shadow transition hover:bg-blue-700">
+                  <Link href={`/course/${course.id}/`} class="mt-auto w-full">
+                    <button class="w-full rounded-lg bg-blue-600 px-8 py-3 text-lg font-semibold text-white shadow transition hover:bg-blue-700 sm:text-xl">
                       Start Quiz
                     </button>
                   </Link>
@@ -136,7 +138,7 @@ export default component$(() => {
             );
           })}
         {/* Swipe indicator dots */}
-        <div class="absolute bottom-30 left-0 z-20 flex w-full justify-center gap-2">
+        <div class="absolute bottom-6 left-0 z-20 flex w-full justify-center gap-2 sm:bottom-10">
           {[...Array(cardCount)].map((_, idx) => (
             <span
               key={idx}

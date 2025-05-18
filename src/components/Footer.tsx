@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 
-const BUILD_VERSION = import.meta.env.PUBLIC_BUILD_SHA?.slice(0, 7) || "local";
+const BUILD_VERSION = process.env.PUBLIC_BUILD_SHA?.slice(0, 7) || "local";
 const MODEL_NAME = "meta-llama/llama-4-maverick";
 const currentYear = new Date().getFullYear();
 
