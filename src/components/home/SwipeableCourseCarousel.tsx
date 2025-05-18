@@ -3,6 +3,9 @@ import { Link } from "@builder.io/qwik-city";
 import ImgAws from "../../media/img/aws.png?jsx";
 import ImgAzure from "../../media/img/azure.png?jsx";
 import ImgGcp from "../../media/img/gcp.png?jsx";
+import ImgOracle from "../../media/img/oracle.png?jsx";
+import ImgIbm from "../../media/img/ibm.png?jsx";
+import ImgHashicorp from "../../media/img/hashicorp.png?jsx";
 
 interface Course {
   id: string;
@@ -57,11 +60,21 @@ export const SwipeableCourseCarousel = component$<SwipeableCourseCarouselProps>(
       "Google Cloud": (
         <ImgGcp class="h-20 w-20 object-contain sm:h-24 sm:w-24" />
       ),
+      "Oracle Cloud": (
+        <ImgOracle class="h-20 w-20 object-contain sm:h-24 sm:w-24" />
+      ),
+      "IBM Cloud": <ImgIbm class="h-20 w-20 object-contain sm:h-24 sm:w-24" />,
+      HashiCorp: (
+        <ImgHashicorp class="h-20 w-20 object-contain sm:h-24 sm:w-24" />
+      ),
     };
     const bgMap: Record<string, string> = {
       AWS: "from-yellow-100 to-yellow-300",
       Azure: "from-blue-100 to-blue-300",
       "Google Cloud": "from-yellow-100 to-red-200",
+      "Oracle Cloud": "from-orange-100 to-orange-300",
+      "IBM Cloud": "from-slate-100 to-slate-300",
+      HashiCorp: "from-zinc-100 to-zinc-300",
     };
     return (
       <div

@@ -190,7 +190,12 @@ export default component$(() => {
               Back to Home
             </button>
             <ResultsReview
-              questions={state.questions}
+              questions={state.questions.map((q) => ({
+                question: q.question,
+                options: q.options,
+                correctAnswer: q.correctAnswer,
+                explanation: q.explanation,
+              }))}
               answers={state.answers}
               feedback={state.feedback}
             />
@@ -268,9 +273,18 @@ export default component$(() => {
                   options={state.questions[currentQuestion.value].options}
                   selected={state.answers[currentQuestion.value]}
                   onSelect$={$(
-                    (opt) => (state.answers[currentQuestion.value] = opt),
+                    (opt: string) =>
+                      (state.answers[currentQuestion.value] = opt),
                   )}
-                  disabled={submitted.value}
+                  disabled={submitted.value || checked.value}
+                  checked={checked.value}
+                  correctAnswer={
+                    state.questions[currentQuestion.value].correctAnswer
+                  }
+                  explanation={
+                    state.questions[currentQuestion.value].explanation
+                  }
+                  instantFeedback={instantFeedback.value}
                 />
                 {state.questions.length > 0 &&
                   currentQuestion.value < state.questions.length && (
@@ -321,21 +335,6 @@ export default component$(() => {
                       )}
                     </div>
                   )}
-                {checked.value && instantFeedback.value && (
-                  <div
-                    class={`mt-4 rounded-lg border px-4 py-3 text-base font-semibold ${instantFeedback.value.correct ? "border-green-400 bg-green-50 text-green-800" : "border-red-400 bg-red-50 text-red-800"}`}
-                  >
-                    {instantFeedback.value.correct
-                      ? "Correct!"
-                      : `Incorrect. Correct answer: ${instantFeedback.value.correctAnswer}`}
-                    {instantFeedback.value.explanation && (
-                      <div class="mt-1 text-sm font-normal text-slate-700">
-                        <strong>Explanation:</strong>{" "}
-                        {instantFeedback.value.explanation}
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             )}
           </div>

@@ -99,6 +99,69 @@ export const allCourses = [
     group: "Google Cloud",
     description: "Design and implement secure infrastructure on Google Cloud for the Security Engineer exam.",
   },
+  {
+    id: "gcp-network-engineer",
+    name: "Google Professional Cloud Network Engineer",
+    group: "Google Cloud",
+    description: "Design, implement, and manage Google Cloud networks for the Network Engineer certification.",
+  },
+  // Oracle Cloud
+  {
+    id: "oracle-foundations-associate",
+    name: "Oracle Cloud Infrastructure Foundations Associate",
+    group: "Oracle Cloud",
+    description: "Learn the basics of Oracle Cloud Infrastructure for the Foundations Associate exam.",
+  },
+  {
+    id: "oracle-architect-associate",
+    name: "Oracle Cloud Infrastructure Architect Associate",
+    group: "Oracle Cloud",
+    description: "Design and implement Oracle Cloud solutions for the Architect Associate certification.",
+  },
+  {
+    id: "oracle-architect-professional",
+    name: "Oracle Cloud Infrastructure Architect Professional",
+    group: "Oracle Cloud",
+    description: "Advanced design and implementation of Oracle Cloud solutions for the Architect Professional exam.",
+  },
+  // IBM Cloud
+  {
+    id: "ibm-cloud-adv-architect",
+    name: "IBM Certified Solution Architect – Cloud Pak for Applications v4.1",
+    group: "IBM Cloud",
+    description: "Design and architect cloud-native applications using IBM Cloud Pak for Applications.",
+  },
+  {
+    id: "ibm-cloud-developer",
+    name: "IBM Certified Application Developer – Cloud Pak for Applications v4.1",
+    group: "IBM Cloud",
+    description: "Develop and deploy applications on IBM Cloud Pak for Applications.",
+  },
+  {
+    id: "ibm-cloud-fundamentals",
+    name: "IBM Cloud Foundations",
+    group: "IBM Cloud",
+    description: "Understand IBM Cloud core concepts and services for the Foundations certification.",
+  },
+  // HashiCorp
+  {
+    id: "hashicorp-terraform-associate",
+    name: "HashiCorp Certified: Terraform Associate",
+    group: "HashiCorp",
+    description: "Validate your skills in infrastructure as code and automation using HashiCorp Terraform.",
+  },
+  {
+    id: "hashicorp-vault-associate",
+    name: "HashiCorp Certified: Vault Associate",
+    group: "HashiCorp",
+    description: "Demonstrate knowledge of secure secret management and data protection with HashiCorp Vault.",
+  },
+  {
+    id: "hashicorp-consul-associate",
+    name: "HashiCorp Certified: Consul Associate",
+    group: "HashiCorp",
+    description: "Show your expertise in service networking and service mesh with HashiCorp Consul.",
+  },
 ];
 
 export const courseGroups = [
@@ -113,5 +176,17 @@ export const courseGroups = [
   {
     name: "Google Cloud",
     courses: allCourses.filter((c) => c.group === "Google Cloud"),
+  },
+  {
+    name: "Oracle Cloud",
+    courses: allCourses.filter((c) => c.group === "Oracle Cloud"),
+  },
+  {
+    name: "IBM Cloud",
+    courses: allCourses.filter((c) => c.group === "IBM Cloud"),
+  },
+  {
+    name: "HashiCorp",
+    courses: allCourses.filter((c) => c.group === "HashiCorp"),
   },
 ]; 

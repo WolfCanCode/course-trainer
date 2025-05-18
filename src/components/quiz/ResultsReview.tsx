@@ -3,6 +3,7 @@ import { component$ } from "@builder.io/qwik";
 interface ResultsReviewProps {
   questions: {
     question: string;
+    options: string[];
     correctAnswer: string;
     explanation?: string;
   }[];
@@ -16,8 +17,16 @@ export const ResultsReview = component$<ResultsReviewProps>(
       <div class="mt-4 w-full">
         <h3 class="mb-4 text-lg font-bold text-slate-800">Review Answers</h3>
         <div class="flex flex-col gap-6">
-          {questions.map((q, idx) =>
-            answers[idx] ? (
+          {questions.map((q, idx) => {
+            const userAnswer = answers[idx];
+            if (!userAnswer) return null;
+            // Only show user's answer and correct answer (if different)
+            const showOptions = [userAnswer];
+            if (userAnswer !== q.correctAnswer)
+              showOptions.push(q.correctAnswer);
+            // Remove duplicates
+            const uniqueOptions = Array.from(new Set(showOptions));
+            return (
               <div
                 key={idx}
                 class={`rounded-xl border bg-slate-50 p-4 shadow-sm ${
@@ -33,19 +42,29 @@ export const ResultsReview = component$<ResultsReviewProps>(
                     {idx + 1}. {q.question}
                   </div>
                 </div>
-                <div class="mb-1 text-sm">
-                  <span class="font-medium">Your answer:</span>{" "}
-                  <span
-                    class={
-                      feedback[idx]?.correct ? "text-green-700" : "text-red-700"
-                    }
-                  >
-                    {answers[idx]}
-                  </span>
-                </div>
-                <div class="mb-1 text-sm">
-                  <span class="font-medium">Correct answer:</span>{" "}
-                  <span class="text-blue-700">{q.correctAnswer}</span>
+                <div class="mb-3 flex flex-col gap-2">
+                  {uniqueOptions.map((opt) => (
+                    <div
+                      key={opt}
+                      class={`flex items-center gap-2 rounded-lg border px-3 py-2 text-base font-medium ${
+                        opt === q.correctAnswer
+                          ? "border-blue-500 bg-blue-50 text-blue-900"
+                          : opt === userAnswer
+                            ? feedback[idx]?.correct
+                              ? "border-green-500 bg-green-50 text-green-900"
+                              : "border-red-500 bg-red-50 text-red-900"
+                            : "border-slate-200 bg-white text-slate-700"
+                      }`}
+                    >
+                      <span class="flex-1 text-left">{opt}</span>
+                      {opt === q.correctAnswer && (
+                        <span class="ml-2 text-blue-700">(Correct)</span>
+                      )}
+                      {opt === userAnswer && (
+                        <span class="ml-2 text-purple-700">(Your choice)</span>
+                      )}
+                    </div>
+                  ))}
                 </div>
                 {q.explanation && (
                   <div class="mt-2 rounded border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
@@ -53,8 +72,8 @@ export const ResultsReview = component$<ResultsReviewProps>(
                   </div>
                 )}
               </div>
-            ) : null,
-          )}
+            );
+          })}
         </div>
       </div>
     );

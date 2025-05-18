@@ -33,7 +33,7 @@ export default component$(() => {
   });
 
   return (
-    <div class="flex flex-col items-start justify-start overflow-hidden px-2 pb-2">
+    <div class="flex flex-col items-start justify-start overflow-hidden pb-2">
       {/* Mobile group selector */}
       <div class="mx-auto mb-4 block w-full max-w-md sm:hidden">
         <GroupSelector
