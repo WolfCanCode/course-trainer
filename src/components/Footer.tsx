@@ -1,7 +1,5 @@
 import { component$ } from "@builder.io/qwik";
 
-const BUILD_VERSION =
-  import.meta.env.NEXT_PUBLIC_BUILD_SHA?.slice(0, 7) || "local";
 const MODEL_NAME = "meta-llama/llama-4-maverick";
 const currentYear = new Date().getFullYear();
 
@@ -9,8 +7,7 @@ export const Footer = component$(() => {
   return (
     <footer class="safe-area-pb mt-auto flex w-full flex-col items-center gap-2 py-8 text-center text-xs text-gray-500 sm:text-sm">
       <span>
-        <strong>Build</strong>{" "}
-        <span class="font-mono text-xs">v1.0 {BUILD_VERSION}</span>
+        <strong>Build</strong> <span class="font-mono text-xs">v1.0</span>
       </span>
       <span>
         <strong>Model</strong>{" "}
