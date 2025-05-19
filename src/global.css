@@ -79,3 +79,12 @@
   animation-iteration-count: infinite;
   animation-direction: alternate;
 }
+
+/* Hide scrollbar utility */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

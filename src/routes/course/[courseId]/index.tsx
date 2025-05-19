@@ -184,7 +184,7 @@ export default component$(() => {
             {isMobile.value ? (
               <div
                 ref={marqueeRef}
-                class="relative w-full overflow-hidden text-lg font-semibold whitespace-nowrap text-slate-800"
+                class="relative flex w-full flex-col justify-center overflow-hidden text-lg font-semibold whitespace-nowrap text-slate-800"
                 title={name}
                 style={{ height: "2.5rem" }}
               >
