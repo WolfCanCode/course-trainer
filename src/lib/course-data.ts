@@ -204,6 +204,37 @@ export const allCourses = [
     group: "HashiCorp",
     description: "Demonstrate advanced operational skills for managing HashiCorp Vault in production environments.",
   },
+  // PMI (Project Management Institute)
+  {
+    id: "pmi-pmp",
+    name: "Project Management Professional (PMP)",
+    group: "PMI",
+    description: "Demonstrate your ability to manage projects and lead teams with the globally recognized PMP certification.",
+  },
+  {
+    id: "pmi-capm",
+    name: "Certified Associate in Project Management (CAPM)",
+    group: "PMI",
+    description: "Show your understanding of fundamental project management concepts and processes with the CAPM certification.",
+  },
+  {
+    id: "pmi-acp",
+    name: "PMI Agile Certified Practitioner (PMI-ACP)",
+    group: "PMI",
+    description: "Validate your knowledge of agile principles and skills with the PMI-ACP certification.",
+  },
+  {
+    id: "pmi-rmp",
+    name: "PMI Risk Management Professional (PMI-RMP)",
+    group: "PMI",
+    description: "Demonstrate your expertise in identifying and managing project risks with the PMI-RMP certification.",
+  },
+  {
+    id: "pmi-pba",
+    name: "PMI Professional in Business Analysis (PMI-PBA)",
+    group: "PMI",
+    description: "Show your skills in business analysis and requirements management with the PMI-PBA certification.",
+  },
 ];
 
 export const courseGroups = [
@@ -230,5 +261,9 @@ export const courseGroups = [
   {
     name: "HashiCorp",
     courses: allCourses.filter((c) => c.group === "HashiCorp"),
+  },
+  {
+    name: "PMI",
+    courses: allCourses.filter((c) => c.group === "PMI"),
   },
 ]; 

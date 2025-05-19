@@ -6,6 +6,7 @@ import ImgGcp from "../../media/img/gcp.png?jsx";
 import ImgOracle from "../../media/img/oracle.png?jsx";
 import ImgIbm from "../../media/img/ibm.png?jsx";
 import ImgHashicorp from "../../media/img/hashicorp.png?jsx";
+import ImgPmi from "../../media/img/pmi.png?jsx";
 import { Marquee } from "./Marquee";
 
 interface CourseCardProps {
@@ -25,6 +26,7 @@ export const CourseCard = component$<CourseCardProps>(
       "Oracle Cloud": <ImgOracle class="h-12 w-12 object-contain" />,
       "IBM Cloud": <ImgIbm class="h-12 w-12 object-contain" />,
       HashiCorp: <ImgHashicorp class="h-12 w-12 object-contain" />,
+      PMI: <ImgPmi class="h-12 w-12 object-contain" />,
     };
     const bgMap: Record<string, string> = {
       AWS: "from-yellow-100 to-yellow-300",
@@ -33,6 +35,7 @@ export const CourseCard = component$<CourseCardProps>(
       "Oracle Cloud": "from-orange-100 to-orange-300",
       "IBM Cloud": "from-slate-100 to-slate-300",
       HashiCorp: "from-zinc-100 to-zinc-300",
+      PMI: "from-amber-100 to-amber-300",
     };
 
     return (

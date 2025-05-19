@@ -6,6 +6,7 @@ import ImgGcp from "../../media/img/gcp.png?jsx";
 import ImgOracle from "../../media/img/oracle.png?jsx";
 import ImgIbm from "../../media/img/ibm.png?jsx";
 import ImgHashicorp from "../../media/img/hashicorp.png?jsx";
+import ImgPmi from "../../media/img/pmi.png?jsx";
 
 interface Course {
   id: string;
@@ -32,6 +33,7 @@ const logoMap: Record<string, any> = {
   "Oracle Cloud": <ImgOracle class="h-8 w-8 object-contain" />,
   "IBM Cloud": <ImgIbm class="h-8 w-8 object-contain" />,
   HashiCorp: <ImgHashicorp class="h-8 w-8 object-contain" />,
+  PMI: <ImgPmi class="h-8 w-8 object-contain" />,
 };
 
 export const DesktopCourseGrid = component$<DesktopCourseGridProps>(
