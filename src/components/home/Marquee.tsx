@@ -1,7 +1,8 @@
 import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import type { QwikIntrinsicElements } from "@builder.io/qwik";
 
 interface MarqueeProps {
-  children: string;
+  children: QwikIntrinsicElements["span"]["children"];
 }
 
 export const Marquee = component$<MarqueeProps>(({ children }) => {
