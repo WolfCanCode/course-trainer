@@ -6,6 +6,7 @@ import ImgGcp from "../../media/img/gcp.png?jsx";
 import ImgOracle from "../../media/img/oracle.png?jsx";
 import ImgIbm from "../../media/img/ibm.png?jsx";
 import ImgHashicorp from "../../media/img/hashicorp.png?jsx";
+import { Marquee } from "./Marquee";
 
 interface CourseCardProps {
   id: string;
@@ -44,8 +45,8 @@ export const CourseCard = component$<CourseCardProps>(
               {logoMap[logoKey as string]}
             </div>
           </div>
-          <h2 class="mb-2 line-clamp-2 text-center text-lg font-bold text-slate-800">
-            {name}
+          <h2 class="mb-2 text-center text-lg font-bold text-slate-800">
+            <Marquee>{name}</Marquee>
           </h2>
           <p class="mb-3 line-clamp-2 text-center text-sm text-slate-600">
             {description}

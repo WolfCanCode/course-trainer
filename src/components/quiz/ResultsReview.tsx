@@ -58,10 +58,46 @@ export const ResultsReview = component$<ResultsReviewProps>(
                     >
                       <span class="flex-1 text-left">{opt}</span>
                       {opt === q.correctAnswer && (
-                        <span class="ml-2 text-blue-700">(Correct)</span>
+                        <span class="ml-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-100 text-green-700">
+                          <svg
+                            width="18"
+                            height="18"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke="currentColor"
+                              stroke-width="3"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </span>
                       )}
                       {opt === userAnswer && (
-                        <span class="ml-2 text-purple-700">(Your choice)</span>
+                        <span class="ml-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-purple-100 text-purple-700">
+                          <svg
+                            width="18"
+                            height="18"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              cx="12"
+                              cy="8"
+                              r="4"
+                              stroke="currentColor"
+                              stroke-width="2"
+                            />
+                            <path
+                              d="M4 20c0-2.21 3.582-4 8-4s8 1.79 8 4"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                            />
+                          </svg>
+                        </span>
                       )}
                     </div>
                   ))}

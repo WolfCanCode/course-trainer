@@ -48,6 +48,13 @@ export default component$(() => {
 
   const checked = useSignal(false);
 
+  const marqueeRef = useSignal<HTMLDivElement>();
+  const marqueeContentRef = useSignal<HTMLSpanElement>();
+  const shouldAnimate = useSignal(false);
+  const marqueeDistance = useSignal(0);
+
+  const isMobile = useSignal(false);
+
   const fetchQuestions = $(async (exclude: string[] = []) => {
     const topic = courseId.replace(/-/g, " ");
     const count = BATCH_SIZE;
@@ -123,6 +130,33 @@ export default component$(() => {
     instantFeedback.value = null;
   });
 
+  useVisibleTask$(() => {
+    setTimeout(() => {
+      const container = marqueeRef.value;
+      const content = marqueeContentRef.value;
+      if (container && content) {
+        const containerWidth = container.offsetWidth;
+        const contentWidth = content.scrollWidth;
+        if (contentWidth > containerWidth) {
+          shouldAnimate.value = true;
+          marqueeDistance.value = contentWidth - containerWidth;
+        } else {
+          shouldAnimate.value = false;
+          marqueeDistance.value = 0;
+        }
+      }
+    }, 0);
+  });
+
+  useVisibleTask$(({ cleanup }) => {
+    const checkMobile = () => {
+      isMobile.value = window.innerWidth <= 640;
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    cleanup(() => window.removeEventListener("resize", checkMobile));
+  });
+
   return (
     <div class="animate-fade-in flex items-start justify-start px-4 pt-2 pb-8">
       <div class="mb-6 flex w-full flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
@@ -144,12 +178,40 @@ export default component$(() => {
                 />
               </svg>
             </button>
-            <div
-              class="marquee w-full text-lg font-semibold text-slate-800"
-              title={name}
-            >
-              <span class="marquee-content">{name}</span>
-            </div>
+            {isMobile.value ? (
+              <div
+                ref={marqueeRef}
+                class="relative w-full overflow-hidden text-lg font-semibold whitespace-nowrap text-slate-800"
+                title={name}
+                style={{ height: "2.5rem" }}
+              >
+                <span
+                  ref={marqueeContentRef}
+                  class={
+                    shouldAnimate.value
+                      ? "animate-marquee-x inline-block will-change-transform"
+                      : "inline-block"
+                  }
+                  style={
+                    shouldAnimate.value
+                      ? {
+                          animationDuration: `${Math.max(4, marqueeDistance.value / 40)}s`,
+                          "--marquee-x": `-${marqueeDistance.value}px`,
+                        }
+                      : {}
+                  }
+                >
+                  {name}
+                </span>
+              </div>
+            ) : (
+              <div
+                class="w-full text-lg font-semibold text-slate-800"
+                title={name}
+              >
+                {name}
+              </div>
+            )}
           </div>
           {/* Submit All icon button in header */}
         </div>
