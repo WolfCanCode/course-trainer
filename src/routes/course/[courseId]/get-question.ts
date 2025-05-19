@@ -33,13 +33,26 @@ const prompts: Record<
 > = {
   en: {
     questionPrompt: (topic: string, count: number, exclude: string[]) =>
-      `Generate ${count} new, unique multiple-choice questions for the ${topic} certificate exam.
-Do NOT repeat any of these questions:
-${exclude.length > 0 ? exclude.map((q, i) => `${i + 1}. ${q}`).join("\n") : ""}
-Return *ONLY* *JSON* as an array of objects like:
+      `You are an expert in creating certification exam questions.
+
+Generate exactly ${count} unique multiple-choice questions for the "${topic}" certificate exam.
+
+Avoid repeating these questions:
+${exclude.length > 0 ? exclude.map((q, i) => `${i + 1}. ${q}`).join("\n") : "None"}
+
+Respond with ONLY valid JSON in this format:
 [
-  { "question": string, "options": string[], "correctAnswer": string, "explanation": string }
+  {
+    "question": "string",
+    "options": ["string", "string", "string", "string"],
+    "correctAnswer": "string",
+    "explanation": "string"
+  }
 ]
+- Use clear and concise wording.
+- Ensure each question has ONE correct answer.
+- Keep explanations under 30 words.
+- Do NOT include any intro text or notes.
 `,
   },
 };
