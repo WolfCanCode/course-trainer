@@ -1,4 +1,4 @@
-import { component$, useSignal, useTask$ } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import ImgAws from "../../media/img/aws.png?jsx";
 import ImgAzure from "../../media/img/azure.png?jsx";
@@ -18,18 +18,12 @@ interface CourseCardProps {
 export const CourseCard = component$<CourseCardProps>(
   ({ id, name, description, logoKey, bgKey }) => {
     const logoMap: Record<string, any> = {
-      AWS: <ImgAws class="h-20 w-20 object-contain sm:h-24 sm:w-24" />,
-      Azure: <ImgAzure class="h-20 w-20 object-contain sm:h-24 sm:w-24" />,
-      "Google Cloud": (
-        <ImgGcp class="h-20 w-20 object-contain sm:h-24 sm:w-24" />
-      ),
-      "Oracle Cloud": (
-        <ImgOracle class="h-20 w-20 object-contain sm:h-24 sm:w-24" />
-      ),
-      "IBM Cloud": <ImgIbm class="h-20 w-20 object-contain sm:h-24 sm:w-24" />,
-      HashiCorp: (
-        <ImgHashicorp class="h-20 w-20 object-contain sm:h-24 sm:w-24" />
-      ),
+      AWS: <ImgAws class="h-12 w-12 object-contain" />,
+      Azure: <ImgAzure class="h-12 w-12 object-contain" />,
+      "Google Cloud": <ImgGcp class="h-12 w-12 object-contain" />,
+      "Oracle Cloud": <ImgOracle class="h-12 w-12 object-contain" />,
+      "IBM Cloud": <ImgIbm class="h-12 w-12 object-contain" />,
+      HashiCorp: <ImgHashicorp class="h-12 w-12 object-contain" />,
     };
     const bgMap: Record<string, string> = {
       AWS: "from-yellow-100 to-yellow-300",
@@ -39,59 +33,26 @@ export const CourseCard = component$<CourseCardProps>(
       "IBM Cloud": "from-slate-100 to-slate-300",
       HashiCorp: "from-zinc-100 to-zinc-300",
     };
-    const expanded = useSignal(false);
-    const cardRef = useSignal<HTMLElement>();
-
-    useTask$(({ track }) => {
-      track(() => expanded.value);
-      if (cardRef.value) {
-        if (expanded.value) {
-          cardRef.value.style.maxHeight = "350px";
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              cardRef.value!.style.maxHeight =
-                cardRef.value!.scrollHeight + "px";
-            });
-          });
-        } else {
-          cardRef.value.style.maxHeight = "350px";
-        }
-      }
-    });
 
     return (
-      <div
-        ref={cardRef}
-        class="flex w-full max-w-xs flex-1 flex-col items-center rounded-2xl border border-slate-200 bg-white p-4 shadow transition-all duration-700 ease-in sm:max-w-sm sm:p-6"
-        style={{
-          overflow: "hidden",
-          minHeight: "350px",
-          maxHeight: "350px",
-        }}
-      >
-        <div class="flex w-full flex-1 flex-col items-center">
-          <div class="mb-4 flex w-full items-center justify-center">
+      <div class="flex h-[300px] w-full max-w-xs flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow sm:max-w-sm">
+        <div class="flex flex-col items-center">
+          <div class="mb-3 flex w-full items-center justify-center">
             <div
-              class={`flex h-20 w-20 items-center justify-center rounded-xl bg-gradient-to-br sm:h-24 sm:w-24 ${bgMap[bgKey as string]}`}
+              class={`flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br ${bgMap[bgKey as string]}`}
             >
               {logoMap[logoKey as string]}
             </div>
           </div>
-          <h2 class="mb-2 text-center text-2xl font-bold text-slate-800 sm:text-3xl">
+          <h2 class="mb-2 line-clamp-2 text-center text-lg font-bold text-slate-800">
             {name}
           </h2>
-          <p class="mb-6 line-clamp-3 text-center text-base text-slate-600 sm:text-lg">
+          <p class="mb-3 line-clamp-2 text-center text-sm text-slate-600">
             {description}
           </p>
         </div>
-        <Link
-          href={`/course/${id}/`}
-          class="mt-auto w-full"
-          onClick$={() => {
-            expanded.value = true;
-          }}
-        >
-          <button class="w-full rounded-lg bg-blue-600 px-8 py-3 text-lg font-semibold text-white shadow transition hover:bg-blue-700 sm:text-xl">
+        <Link href={`/course/${id}/`} class="w-full">
+          <button class="w-full rounded-lg bg-blue-600 px-6 py-3 text-base font-semibold text-white shadow transition hover:bg-blue-700">
             Start Quiz
           </button>
         </Link>

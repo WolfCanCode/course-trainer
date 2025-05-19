@@ -143,6 +143,18 @@ export const allCourses = [
     group: "IBM Cloud",
     description: "Understand IBM Cloud core concepts and services for the Foundations certification.",
   },
+  {
+    id: "ibm-cloud-professional-developer",
+    name: "IBM Certified Professional Developer - Cloud v5",
+    group: "IBM Cloud",
+    description: "Develop, deploy, and manage applications on IBM Cloud for the Professional Developer certification.",
+  },
+  {
+    id: "ibm-cloud-sre",
+    name: "IBM Certified SRE - Cloud v2",
+    group: "IBM Cloud",
+    description: "Demonstrate skills in site reliability engineering and cloud operations for IBM Cloud.",
+  },
   // HashiCorp
   {
     id: "hashicorp-terraform-associate",
@@ -161,6 +173,18 @@ export const allCourses = [
     name: "HashiCorp Certified: Consul Associate",
     group: "HashiCorp",
     description: "Show your expertise in service networking and service mesh with HashiCorp Consul.",
+  },
+  {
+    id: "hashicorp-nomad-associate",
+    name: "HashiCorp Certified: Nomad Associate",
+    group: "HashiCorp",
+    description: "Show your expertise in workload orchestration and scheduling with HashiCorp Nomad.",
+  },
+  {
+    id: "hashicorp-vault-operations-professional",
+    name: "HashiCorp Certified: Vault Operations Professional",
+    group: "HashiCorp",
+    description: "Demonstrate advanced operational skills for managing HashiCorp Vault in production environments.",
   },
 ];
 
