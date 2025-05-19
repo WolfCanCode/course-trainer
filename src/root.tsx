@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useVisibleTask$ } from "@builder.io/qwik";
 import {
   QwikCityProvider,
   RouterOutlet,
@@ -6,15 +6,14 @@ import {
 } from "@builder.io/qwik-city";
 import { RouterHead } from "./components/router-head/router-head";
 import { isDev } from "@builder.io/qwik";
-import { inject } from "@vercel/analytics";
-
-if (typeof window !== "undefined") {
-  inject();
-}
 
 import "./global.css";
 
 export default component$(() => {
+  useVisibleTask$(() => {
+    import("@vercel/analytics").then(({ inject }) => inject());
+  });
+
   /**
    * The root of a QwikCity site always start with the <QwikCityProvider> component,
    * immediately followed by the document's <head> and <body>.
