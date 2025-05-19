@@ -324,7 +324,7 @@ export default component$(() => {
                     <div>Question {currentQuestion.value + 1}</div>
                     <button
                       type="button"
-                      class="ml-2 border-none font-bold text-green-800 transition disabled:cursor-not-allowed disabled:opacity-50"
+                      class="ml-2 flex cursor-pointer items-center gap-1 border-none font-bold text-green-800 underline underline-offset-4 transition hover:text-green-600 hover:underline hover:decoration-2 disabled:cursor-not-allowed disabled:opacity-50"
                       title="Submit All"
                       disabled={Object.keys(state.answers).length === 0}
                       onClick$={() => handleSubmit()}

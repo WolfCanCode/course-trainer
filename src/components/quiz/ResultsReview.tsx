@@ -48,7 +48,7 @@ export const ResultsReview = component$<ResultsReviewProps>(
                       key={opt}
                       class={`flex items-center gap-2 rounded-lg border px-3 py-2 text-base font-medium ${
                         opt === q.correctAnswer
-                          ? "border-blue-500 bg-blue-50 text-blue-900"
+                          ? "border-green-500 bg-green-50 text-green-900"
                           : opt === userAnswer
                             ? feedback[idx]?.correct
                               ? "border-green-500 bg-green-50 text-green-900"
