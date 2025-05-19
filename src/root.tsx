@@ -11,6 +11,7 @@ import { inject } from "@vercel/analytics";
 import "./global.css";
 
 export default component$(() => {
+  inject();
   /**
    * The root of a QwikCity site always start with the <QwikCityProvider> component,
    * immediately followed by the document's <head> and <body>.
@@ -31,7 +32,6 @@ export default component$(() => {
         <RouterHead />
       </head>
       <body lang="en">
-        <inject />
         <RouterOutlet />
         {!isDev && <ServiceWorkerRegister />}
       </body>
