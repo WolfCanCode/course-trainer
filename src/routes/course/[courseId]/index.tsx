@@ -124,12 +124,14 @@ export default component$(() => {
     });
   }
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }: { track: any }) => {
     track(() => currentQuestion.value);
     checked.value = false;
     instantFeedback.value = null;
   });
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     setTimeout(() => {
       const container = marqueeRef.value;
@@ -148,6 +150,7 @@ export default component$(() => {
     }, 0);
   });
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ cleanup }) => {
     const checkMobile = () => {
       isMobile.value = window.innerWidth <= 640;
@@ -338,7 +341,7 @@ export default component$(() => {
                     (opt: string) =>
                       (state.answers[currentQuestion.value] = opt),
                   )}
-                  disabled={submitted.value || checked.value}
+                  disabled={checked.value}
                   checked={checked.value}
                   correctAnswer={
                     state.questions[currentQuestion.value].correctAnswer

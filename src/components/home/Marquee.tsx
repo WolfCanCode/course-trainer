@@ -1,8 +1,7 @@
 import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
-import type { QwikIntrinsicElements } from "@builder.io/qwik";
 
 interface MarqueeProps {
-  children: QwikIntrinsicElements["span"]["children"];
+  children?: any;
 }
 
 export const Marquee = component$<MarqueeProps>(({ children }) => {
@@ -11,6 +10,7 @@ export const Marquee = component$<MarqueeProps>(({ children }) => {
   const needsMarquee = useSignal(false);
   const distance = useSignal(0);
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     // Wait for DOM paint
     requestAnimationFrame(() => {

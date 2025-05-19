@@ -10,6 +10,7 @@ import { isDev } from "@builder.io/qwik";
 import "./global.css";
 
 export default component$(() => {
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(() => {
     import("@vercel/analytics").then(({ inject }) => inject());
   });

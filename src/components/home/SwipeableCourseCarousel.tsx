@@ -1,4 +1,5 @@
-import { component$, QRL, useVisibleTask$, useSignal } from "@builder.io/qwik";
+import { component$, useVisibleTask$, useSignal } from "@builder.io/qwik";
+import type { QRL } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import ImgAws from "../../media/img/aws.png?jsx";
 import ImgAzure from "../../media/img/azure.png?jsx";
