@@ -66,7 +66,7 @@ export const getQuestion = server$(async function (
           body: JSON.stringify({
             model: "meta-llama/llama-4-maverick-17b-128e-instruct-fp8",
             stream: false,
-            max_tokens: 4096,
+            max_tokens: 8092,
             temperature: 1.0,
             messages: [
               {
