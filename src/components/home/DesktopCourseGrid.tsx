@@ -40,7 +40,7 @@ export const DesktopCourseGrid = component$<DesktopCourseGridProps>(
     const group =
       groups.find((g) => g.name === selectedGroup.value) || groups[0];
     return (
-      <div class="mx-auto hidden w-full max-w-7xl flex-row gap-8 sm:flex">
+      <div class="animate-fade-in mx-auto hidden w-full max-w-7xl flex-row gap-8 py-4 sm:flex">
         {/* Sidebar */}
         <aside class="sticky top-8 flex h-fit min-w-[200px] flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-md">
           {groups.map((g) => (

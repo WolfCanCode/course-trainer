@@ -35,7 +35,7 @@ export const CourseCard = component$<CourseCardProps>(
     };
 
     return (
-      <div class="flex h-[300px] w-full max-w-xs flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow sm:max-w-sm">
+      <div class="animate-fade-in flex h-[300px] w-full max-w-xs flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow sm:max-w-sm">
         <div class="flex flex-col items-center">
           <div class="mb-3 flex w-full items-center justify-center">
             <div

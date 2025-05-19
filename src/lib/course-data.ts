@@ -124,6 +124,24 @@ export const allCourses = [
     group: "Oracle Cloud",
     description: "Advanced design and implementation of Oracle Cloud solutions for the Architect Professional exam.",
   },
+  {
+    id: "oracle-developer-associate",
+    name: "Oracle Cloud Infrastructure Developer Associate",
+    group: "Oracle Cloud",
+    description: "Develop and deploy applications on Oracle Cloud for the Developer Associate certification.",
+  },
+  {
+    id: "oracle-security-professional",
+    name: "Oracle Cloud Infrastructure Security Professional",
+    group: "Oracle Cloud",
+    description: "Demonstrate advanced security skills for Oracle Cloud Infrastructure.",
+  },
+  {
+    id: "oracle-data-science-professional",
+    name: "Oracle Cloud Infrastructure Data Science Professional",
+    group: "Oracle Cloud",
+    description: "Build and manage data science solutions on Oracle Cloud for the Data Science Professional certification.",
+  },
   // IBM Cloud
   {
     id: "ibm-cloud-adv-architect",
