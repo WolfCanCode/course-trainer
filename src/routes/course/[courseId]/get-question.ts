@@ -33,26 +33,27 @@ const prompts: Record<
 > = {
   en: {
     questionPrompt: (topic: string, count: number, exclude: string[]) =>
-      `You are an expert in creating certification exam questions.
+      `You are a certification quiz generator.
 
-Generate exactly ${count} unique multiple-choice questions for the "${topic}" certificate exam.
+Task: Generate exactly ${count} new multiple-choice questions for the "${topic}" exam.
+Avoid these previous questions:
+${exclude.length > 0 ? exclude.join("\n") : "None"}
 
-Avoid repeating these questions:
-${exclude.length > 0 ? exclude.map((q, i) => `${i + 1}. ${q}`).join("\n") : "None"}
+Rules:
+- Each question must have 4 options and 1 correct answer.
+- Return ONLY valid JSON as shown below. Do NOT include extra text or formatting.
 
-Respond with ONLY valid JSON in this format:
+Example output:
 [
   {
-    "question": "string",
-    "options": ["string", "string", "string", "string"],
-    "correctAnswer": "string",
-    "explanation": "string"
+    "question": "What does AWS Lambda do?",
+    "options": ["Option A", "Option B", "Option C", "Option D"],
+    "correctAnswer": "Option B",
+    "explanation": "AWS Lambda runs code without provisioning servers."
   }
 ]
-- Use clear and concise wording.
-- Ensure each question has ONE correct answer.
-- Keep explanations under 30 words.
-- Do NOT include any intro text or notes.
+
+Strictly return ONLY a JSON array. No markdown, no explanations outside the array.
 `,
   },
 };
