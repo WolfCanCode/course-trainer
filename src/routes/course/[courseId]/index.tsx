@@ -195,39 +195,63 @@ export default component$(() => {
                 />
               </svg>
             </button>
-            {isMobile.value ? (
-              <div
-                ref={marqueeRef}
-                class="relative flex w-full flex-col justify-center overflow-hidden text-lg font-semibold whitespace-nowrap text-slate-800"
-                title={name}
-                style={{ height: "2.5rem" }}
-              >
-                <span
-                  ref={marqueeContentRef}
-                  class={
-                    shouldAnimate.value
-                      ? "animate-marquee-x inline-block will-change-transform"
-                      : "inline-block"
-                  }
-                  style={
-                    shouldAnimate.value
-                      ? {
-                          animationDuration: `${Math.max(4, marqueeDistance.value / 40)}s`,
-                          "--marquee-x": `-${marqueeDistance.value}px`,
-                        }
-                      : {}
-                  }
+            <div class="min-w-0 flex-1">
+              {isMobile.value ? (
+                <div
+                  ref={marqueeRef}
+                  class="relative flex w-full flex-col justify-center overflow-hidden text-lg font-semibold whitespace-nowrap text-slate-800"
+                  title={name}
+                  style={{ height: "2.5rem" }}
+                >
+                  <span
+                    ref={marqueeContentRef}
+                    class={
+                      shouldAnimate.value
+                        ? "animate-marquee-x inline-block will-change-transform"
+                        : "inline-block"
+                    }
+                    style={
+                      shouldAnimate.value
+                        ? {
+                            animationDuration: `${Math.max(4, marqueeDistance.value / 40)}s`,
+                            "--marquee-x": `-${marqueeDistance.value}px`,
+                          }
+                        : {}
+                    }
+                  >
+                    {name}
+                  </span>
+                </div>
+              ) : (
+                <div
+                  class="w-full truncate text-lg font-semibold text-slate-800"
+                  title={name}
                 >
                   {name}
-                </span>
-              </div>
-            ) : (
-              <div
-                class="w-full text-lg font-semibold text-slate-800"
-                title={name}
+                </div>
+              )}
+            </div>
+            {Object.keys(state.answers).length > 0 && (
+              <button
+                class="ml-2 flex items-center gap-1 rounded border border-green-200 bg-white px-3 py-1 text-xs font-semibold text-green-700 transition hover:bg-green-50"
+                type="button"
+                onClick$={() => handleSubmit()}
               >
-                {name}
-              </div>
+                <svg
+                  class="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M5 13l4 4L19 7"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Finish
+              </button>
             )}
           </div>
           {/* Submit All icon button in header */}
@@ -334,18 +358,51 @@ export default component$(() => {
 
             {started.value && !loading.value && state.questions.length > 0 && (
               <div class="w-full">
-                <div class="mb-4 text-sm font-medium text-purple-700">
-                  <div class="flex items-center justify-between">
-                    <div>Question {currentQuestion.value + 1}</div>
-                    <button
-                      type="button"
-                      class="ml-2 flex cursor-pointer items-center gap-1 border-none font-bold text-green-800 underline underline-offset-4 transition hover:text-green-600 hover:underline hover:decoration-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      title="Submit All"
-                      disabled={Object.keys(state.answers).length === 0}
-                      onClick$={() => handleSubmit()}
-                    >
-                      Finish
-                    </button>
+                {/* Responsive Quiz Header */}
+                <div class="mb-4 flex flex-col gap-2 px-2 py-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div class="flex flex-row flex-wrap items-center gap-2">
+                    <span class="text-sm font-bold text-purple-700">
+                      Question {currentQuestion.value + 1}
+                    </span>
+                    {state.questions[currentQuestion.value].type ===
+                    "multiple-two" ? (
+                      <span class="inline-flex items-center gap-1 rounded bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-700">
+                        <svg
+                          class="h-4 w-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <rect
+                            x="4"
+                            y="4"
+                            width="16"
+                            height="16"
+                            rx="2"
+                            stroke-width="2"
+                          />
+                          <path
+                            d="M9 12l2 2 4-4"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        Select TWO
+                      </span>
+                    ) : (
+                      <span class="inline-flex items-center gap-1 rounded bg-green-100 px-2 py-1 text-xs font-semibold text-green-700">
+                        <svg
+                          class="h-4 w-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle cx="12" cy="12" r="6" stroke-width="2" />
+                        </svg>
+                        Single Choice
+                      </span>
+                    )}
                   </div>
                 </div>
                 <QuestionDisplay

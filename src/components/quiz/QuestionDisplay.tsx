@@ -75,18 +75,6 @@ export const QuestionDisplay = component$<QuestionDisplayProps>(
               ></div>
             </div>
           )}
-        {/* Question Type Badge */}
-        <div class="mb-2 flex items-center gap-2">
-          {type === "multiple-two" ? (
-            <span class="rounded bg-blue-100 px-2 py-1 text-xs font-bold text-blue-700">
-              Select TWO
-            </span>
-          ) : (
-            <span class="rounded bg-green-100 px-2 py-1 text-xs font-bold text-green-700">
-              Single Choice
-            </span>
-          )}
-        </div>
         <div class="mb-4 text-base font-bold text-slate-800">{question}</div>
         {type === "multiple-two" && (
           <div class="mb-2 text-xs font-medium text-blue-700">
