@@ -24,7 +24,7 @@ export default component$(() => {
 
   const state = useStore<{
     questions: QuizQuestion[];
-    answers: Record<number, string>;
+    answers: Record<number, string | string[]>;
     feedback: { correct: boolean; explanation?: string }[];
     batch: number;
   }>({
@@ -86,10 +86,24 @@ export default component$(() => {
 
   const handleSubmit = $(() => {
     submitted.value = true;
-    state.feedback = state.questions.map((q, idx) => ({
-      correct: state.answers[idx] === q.correctAnswer,
-      explanation: q.explanation,
-    }));
+    state.feedback = state.questions.map((q, idx) => {
+      const userAnswer = state.answers[idx];
+      if (q.type === "multiple-two") {
+        // Compare arrays (order-insensitive)
+        const a = Array.isArray(userAnswer) ? [...userAnswer].sort() : [];
+        const b = Array.isArray(q.correctAnswer)
+          ? [...q.correctAnswer].sort()
+          : [];
+        const correct =
+          a.length === 2 && b.length === 2 && a[0] === b[0] && a[1] === b[1];
+        return { correct, explanation: q.explanation };
+      } else {
+        return {
+          correct: userAnswer === q.correctAnswer,
+          explanation: q.explanation,
+        };
+      }
+    });
   });
 
   const course = allCourses.find((c) => c.id === courseId);
@@ -260,6 +274,7 @@ export default component$(() => {
                 options: q.options,
                 correctAnswer: q.correctAnswer,
                 explanation: q.explanation,
+                type: q.type,
               }))}
               answers={state.answers}
               feedback={state.feedback}
@@ -336,11 +351,37 @@ export default component$(() => {
                 <QuestionDisplay
                   question={state.questions[currentQuestion.value].question}
                   options={state.questions[currentQuestion.value].options}
-                  selected={state.answers[currentQuestion.value]}
-                  onSelect$={$(
-                    (opt: string) =>
-                      (state.answers[currentQuestion.value] = opt),
-                  )}
+                  selected={
+                    state.answers[currentQuestion.value] ??
+                    (state.questions[currentQuestion.value].type ===
+                    "multiple-two"
+                      ? []
+                      : "")
+                  }
+                  type={state.questions[currentQuestion.value].type}
+                  onSelect$={$((opt: string) => {
+                    const q = state.questions[currentQuestion.value];
+                    if (q.type === "multiple-two") {
+                      const prev = Array.isArray(
+                        state.answers[currentQuestion.value],
+                      )
+                        ? [
+                            ...(state.answers[
+                              currentQuestion.value
+                            ] as string[]),
+                          ]
+                        : [];
+                      if (prev.includes(opt)) {
+                        state.answers[currentQuestion.value] = prev.filter(
+                          (o) => o !== opt,
+                        );
+                      } else if (prev.length < 2) {
+                        state.answers[currentQuestion.value] = [...prev, opt];
+                      }
+                    } else {
+                      state.answers[currentQuestion.value] = opt;
+                    }
+                  })}
                   disabled={checked.value}
                   checked={checked.value}
                   correctAnswer={
@@ -349,7 +390,6 @@ export default component$(() => {
                   explanation={
                     state.questions[currentQuestion.value].explanation
                   }
-                  instantFeedback={instantFeedback.value}
                 />
                 {state.questions.length > 0 &&
                   currentQuestion.value < state.questions.length && (
@@ -358,18 +398,16 @@ export default component$(() => {
                         <button
                           type="button"
                           class="flex w-full items-center justify-center rounded-lg bg-black px-8 py-3 text-lg font-semibold text-white shadow transition hover:bg-slate-800 disabled:opacity-60"
-                          disabled={!state.answers[currentQuestion.value]}
-                          onClick$={() => {
-                            // Show feedback
+                          disabled={(() => {
+                            const ans = state.answers[currentQuestion.value];
                             const q = state.questions[currentQuestion.value];
-                            const userAnswer =
-                              state.answers[currentQuestion.value];
-                            const correct = userAnswer === q.correctAnswer;
-                            instantFeedback.value = {
-                              correct,
-                              explanation: q.explanation,
-                              correctAnswer: q.correctAnswer,
-                            };
+                            if (q.type === "multiple-two") {
+                              return !Array.isArray(ans) || ans.length !== 2;
+                            } else {
+                              return !ans;
+                            }
+                          })()}
+                          onClick$={() => {
                             checked.value = true;
                           }}
                         >

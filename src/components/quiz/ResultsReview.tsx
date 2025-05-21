@@ -4,10 +4,11 @@ interface ResultsReviewProps {
   questions: {
     question: string;
     options: string[];
-    correctAnswer: string;
+    correctAnswer: string | string[];
     explanation?: string;
+    type: "single" | "multiple-two";
   }[];
-  answers: Record<number, string>;
+  answers: Record<number, string | string[]>;
   feedback: { correct: boolean; explanation?: string }[];
 }
 
@@ -20,12 +21,19 @@ export const ResultsReview = component$<ResultsReviewProps>(
           {questions.map((q, idx) => {
             const userAnswer = answers[idx];
             if (!userAnswer) return null;
-            // Only show user's answer and correct answer (if different)
-            const showOptions = [userAnswer];
-            if (userAnswer !== q.correctAnswer)
-              showOptions.push(q.correctAnswer);
-            // Remove duplicates
-            const uniqueOptions = Array.from(new Set(showOptions));
+            let showOptions: string[] = [];
+            if (q.type === "multiple-two") {
+              const userArr = Array.isArray(userAnswer) ? userAnswer : [];
+              const correctArr = Array.isArray(q.correctAnswer)
+                ? q.correctAnswer
+                : [];
+              showOptions = Array.from(new Set([...userArr, ...correctArr]));
+            } else {
+              showOptions = [userAnswer as string];
+              if (userAnswer !== q.correctAnswer)
+                showOptions.push(q.correctAnswer as string);
+              showOptions = Array.from(new Set(showOptions));
+            }
             return (
               <div
                 key={idx}
@@ -43,13 +51,23 @@ export const ResultsReview = component$<ResultsReviewProps>(
                   </div>
                 </div>
                 <div class="mb-3 flex flex-col gap-2">
-                  {uniqueOptions.map((opt) => (
+                  {showOptions.map((opt) => (
                     <div
                       key={opt}
                       class={`flex items-center gap-2 rounded-lg border px-3 py-2 text-base font-medium ${
-                        opt === q.correctAnswer
+                        (
+                          q.type === "multiple-two"
+                            ? Array.isArray(q.correctAnswer) &&
+                              q.correctAnswer.includes(opt)
+                            : q.correctAnswer === opt
+                        )
                           ? "border-green-500 bg-green-50 text-green-900"
-                          : opt === userAnswer
+                          : (
+                                q.type === "multiple-two"
+                                  ? Array.isArray(userAnswer) &&
+                                    userAnswer.includes(opt)
+                                  : userAnswer === opt
+                              )
                             ? feedback[idx]?.correct
                               ? "border-green-500 bg-green-50 text-green-900"
                               : "border-red-500 bg-red-50 text-red-900"
@@ -57,7 +75,10 @@ export const ResultsReview = component$<ResultsReviewProps>(
                       }`}
                     >
                       <span class="flex-1 text-left">{opt}</span>
-                      {opt === q.correctAnswer && (
+                      {(q.type === "multiple-two"
+                        ? Array.isArray(q.correctAnswer) &&
+                          q.correctAnswer.includes(opt)
+                        : q.correctAnswer === opt) && (
                         <span class="ml-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-100 text-green-700">
                           <svg
                             width="18"
@@ -75,7 +96,9 @@ export const ResultsReview = component$<ResultsReviewProps>(
                           </svg>
                         </span>
                       )}
-                      {opt === userAnswer && (
+                      {(q.type === "multiple-two"
+                        ? Array.isArray(userAnswer) && userAnswer.includes(opt)
+                        : userAnswer === opt) && (
                         <span class="ml-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-purple-100 text-purple-700">
                           <svg
                             width="18"

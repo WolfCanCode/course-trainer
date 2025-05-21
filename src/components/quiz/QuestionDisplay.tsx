@@ -3,17 +3,15 @@ import { component$, type QRL } from "@builder.io/qwik";
 interface QuestionDisplayProps {
   question: string;
   options: string[];
-  selected: string | undefined;
+  selected: string | string[];
   onSelect$: QRL<(opt: string) => void>;
+  type: "single" | "multiple-two";
   disabled?: boolean;
   checked?: boolean;
-  correctAnswer?: string;
+  correctAnswer?: string | string[];
   explanation?: string;
-  instantFeedback?: {
-    correct: boolean;
-    explanation?: string;
-    correctAnswer: string;
-  } | null;
+  currentIndex?: number; // For progress bar (optional)
+  totalQuestions?: number; // For progress bar (optional)
 }
 
 export const QuestionDisplay = component$<QuestionDisplayProps>(
@@ -22,45 +20,109 @@ export const QuestionDisplay = component$<QuestionDisplayProps>(
     options,
     selected,
     onSelect$,
+    type,
     disabled,
     checked,
     correctAnswer,
     explanation,
-    instantFeedback,
+    currentIndex,
+    totalQuestions,
   }) => {
-    // After 'Check', only show user's choice and correct answer
+    // For checked state, show only selected and correct answers
     let displayOptions = options;
     if (checked && selected && correctAnswer) {
-      displayOptions = [selected];
-      if (selected !== correctAnswer) displayOptions.push(correctAnswer);
-      displayOptions = Array.from(new Set(displayOptions));
+      if (type === "multiple-two") {
+        const sel = Array.isArray(selected) ? selected : [];
+        const corr = Array.isArray(correctAnswer) ? correctAnswer : [];
+        displayOptions = Array.from(new Set([...sel, ...corr]));
+      } else {
+        displayOptions = [selected as string];
+        if (selected !== correctAnswer)
+          displayOptions.push(correctAnswer as string);
+        displayOptions = Array.from(new Set(displayOptions));
+      }
     }
+    // Helper for multiple-two
+    const isChecked = (opt: string) =>
+      Array.isArray(selected) && selected.includes(opt);
+    const selectedCount = Array.isArray(selected) ? selected.length : 0;
+    // Helper for feedback
+    const isCorrect = (opt: string) =>
+      type === "multiple-two"
+        ? Array.isArray(correctAnswer) && correctAnswer.includes(opt)
+        : correctAnswer === opt;
+    const isIncorrect = (opt: string) =>
+      type === "multiple-two"
+        ? Array.isArray(selected) &&
+          selected.includes(opt) &&
+          !(Array.isArray(correctAnswer) && correctAnswer.includes(opt))
+        : selected === opt && correctAnswer !== opt;
+    const isSelected = (opt: string) =>
+      type === "multiple-two"
+        ? Array.isArray(selected) && selected.includes(opt)
+        : selected === opt;
     return (
       <div>
-        <div class="mb-4 text-lg font-bold text-slate-800">{question}</div>
+        {/* Progress Bar (optional) */}
+        {typeof currentIndex === "number" &&
+          typeof totalQuestions === "number" && (
+            <div class="mb-4 h-2 w-full rounded-full bg-slate-200">
+              <div
+                class="h-2 rounded-full bg-purple-500 transition-all"
+                style={{
+                  width: `${((currentIndex + 1) / totalQuestions) * 100}%`,
+                }}
+              ></div>
+            </div>
+          )}
+        {/* Question Type Badge */}
+        <div class="mb-2 flex items-center gap-2">
+          {type === "multiple-two" ? (
+            <span class="rounded bg-blue-100 px-2 py-1 text-xs font-bold text-blue-700">
+              Select TWO
+            </span>
+          ) : (
+            <span class="rounded bg-green-100 px-2 py-1 text-xs font-bold text-green-700">
+              Single Choice
+            </span>
+          )}
+        </div>
+        <div class="mb-4 text-base font-bold text-slate-800">{question}</div>
+        {type === "multiple-two" && (
+          <div class="mb-2 text-xs font-medium text-blue-700">
+            Select exactly two options.
+          </div>
+        )}
         <div class="mb-8 flex flex-col gap-3">
           {displayOptions.map((opt) => (
-            <button
+            <label
               key={opt}
-              type="button"
-              disabled={disabled}
-              onClick$={() => onSelect$(opt)}
-              class={`flex w-full items-center justify-start rounded-xl border px-4 py-3 text-base font-medium transition-all ${
-                checked && correctAnswer
-                  ? opt === correctAnswer
-                    ? "border-green-500 bg-green-50 text-green-900"
-                    : opt === selected
-                      ? instantFeedback?.correct
-                        ? "border-green-500 bg-green-50 text-green-900"
-                        : "border-red-500 bg-red-50 text-red-900"
-                      : "border-slate-200 bg-white text-slate-700"
-                  : selected === opt
-                    ? "border-purple-500 bg-purple-50 text-purple-900 shadow"
-                    : "border-slate-200 bg-white text-slate-700 hover:border-blue-400 hover:bg-blue-50"
-              } ${disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
+              class={`group flex cursor-pointer items-center gap-3 rounded-xl border-2 px-4 py-2 text-sm font-medium shadow-sm transition-all ${isSelected(opt) ? "scale-105 border-purple-600 bg-purple-50" : "border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50"} ${checked && isCorrect(opt) ? "border-green-500 bg-green-50" : ""} ${checked && isIncorrect(opt) ? "border-red-500 bg-red-50" : ""} `}
+              style={{ transition: "all 0.15s" }}
             >
+              {type === "multiple-two" ? (
+                <input
+                  type="checkbox"
+                  checked={isChecked(opt)}
+                  disabled={
+                    disabled ||
+                    (!isChecked(opt) && selectedCount >= 2 && !checked)
+                  }
+                  onChange$={() => onSelect$(opt)}
+                  class="h-5 w-5 accent-purple-600"
+                />
+              ) : (
+                <input
+                  type="radio"
+                  checked={selected === opt}
+                  disabled={disabled}
+                  onChange$={() => onSelect$(opt)}
+                  class="h-5 w-5 accent-purple-600"
+                />
+              )}
               <span class="flex-1 text-left">{opt}</span>
-              {checked && correctAnswer && opt === correctAnswer && (
+              {/* Feedback icons */}
+              {checked && isCorrect(opt) && (
                 <span class="ml-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-100 text-green-700">
                   <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
                     <path
@@ -73,7 +135,7 @@ export const QuestionDisplay = component$<QuestionDisplayProps>(
                   </svg>
                 </span>
               )}
-              {checked && selected && opt === selected && (
+              {checked && isSelected(opt) && (
                 <span class="ml-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-purple-100 text-purple-700">
                   <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
                     <circle
@@ -92,7 +154,7 @@ export const QuestionDisplay = component$<QuestionDisplayProps>(
                   </svg>
                 </span>
               )}
-              {!checked && selected === opt && (
+              {!checked && isSelected(opt) && (
                 <span class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-purple-500 text-white">
                   <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
                     <path
@@ -105,7 +167,7 @@ export const QuestionDisplay = component$<QuestionDisplayProps>(
                   </svg>
                 </span>
               )}
-            </button>
+            </label>
           ))}
         </div>
         {checked && explanation && (
