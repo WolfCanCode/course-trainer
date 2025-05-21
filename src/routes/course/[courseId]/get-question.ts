@@ -33,28 +33,37 @@ const prompts: Record<
 > = {
   en: {
     questionPrompt: (topic: string, count: number, exclude: string[]) =>
-      `You are a certification quiz generator.
+      `You are a professional certification quiz generator.
 
-Task: Generate exactly ${count} new multiple-choice questions for the "${topic}" exam.
-The questions me be as close as the difficult of the real exam or harder. Avoid these previous questions:
-${exclude.length > 0 ? exclude.join("\n") : "None"}
+Task: Generate exactly ${count} brand new, exam-level multiple-choice questions for the “${topic}” certification exam.
+	•	Questions must closely mirror the style, scenario-based complexity, and phrasing used in actual “${topic}” exams.
+	•	Include a realistic mix: conceptual, scenario-based, best practices, security, pricing/cost, troubleshooting, and service limitation questions—depending on the real exam content.
+	•	Use authentic exam language such as “What is the MOST appropriate…”, “Which option BEST meets the requirement…”, or “What should the professional do FIRST…”.
+	•	Avoid these previous questions:
+${exclude.length > 0 ? exclude.join(”\n”) : “None”}
 
 Rules:
-- Each question must have 4 options and 1 correct answer.
-- Return ONLY valid JSON as shown below. Do NOT include extra text or formatting.
+	•	Each question MUST have 4 options, only 1 correct answer, and realistic distractors.
+	•	Each must have a short explanation after the answer, matching the style of official rationale.
+	•	Use real terminology and professional exam phrasing—avoid generic, simple, or easy questions.
+	•	Return ONLY valid JSON as shown below. Do NOT include extra text or formatting.
 
 Example output:
 [
-  {
-    "question": "What does AWS Lambda do?",
-    "options": ["Option A", "Option B", "Option C", "Option D"],
-    "correctAnswer": "Option B",
-    "explanation": "AWS Lambda runs code without provisioning servers."
-  }
+{
+“question”: “A company needs to ensure compliance with data residency requirements in its cloud environment. Which control is MOST appropriate to address this need?”,
+“options”: [
+“Enable encryption at rest”,
+“Use region-specific resources”,
+“Implement multi-factor authentication”,
+“Configure security groups”
+],
+“correctAnswer”: “Use region-specific resources”,
+“explanation”: “Using region-specific resources ensures data is stored and processed within specific geographic regions, addressing data residency requirements.”
+}
 ]
 
-Strictly return ONLY a JSON array. No markdown, no explanations outside the array.
-`,
+Strictly return ONLY a JSON array. No markdown, no extra commentary.`,
   },
 };
 
