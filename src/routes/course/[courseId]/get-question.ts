@@ -36,7 +36,7 @@ const prompts: Record<
       `You are a certification quiz generator.
 
 Task: Generate exactly ${count} new multiple-choice questions for the "${topic}" exam.
-Avoid these previous questions:
+The questions me be as close as the difficult of the real exam or harder. Avoid these previous questions:
 ${exclude.length > 0 ? exclude.join("\n") : "None"}
 
 Rules:
