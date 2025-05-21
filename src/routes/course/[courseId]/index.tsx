@@ -332,29 +332,71 @@ export default component$(() => {
                 Start Quiz
               </button>
             )}
-            {started.value && loading.value && (
-              <div class="flex h-[400px] w-full flex-col items-center justify-center">
-                {/* Question skeleton */}
-                <div class="relative mb-8 h-7 w-3/4 overflow-hidden rounded-lg bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200">
-                  <div class="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
-                </div>
-                {/* Option skeletons */}
-                <div class="mb-8 flex w-full flex-col gap-4">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      class="relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200"
-                    >
-                      <div class="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+            {started.value &&
+              loading.value &&
+              (() => {
+                const funFacts = [
+                  "AWS was launched in 2006 and is now the world's largest cloud provider!",
+                  "Microsoft Azure was originally called 'Project Red Dog'.",
+                  "Google Cloud's data centers are carbon neutral.",
+                  "HashiCorp Terraform lets you manage infrastructure as code!",
+                  "Oracle Cloud offers Always Free resources for developers.",
+                  "IBM Cloud was one of the first to offer Watson AI services.",
+                  "PMI's PMP certification is recognized in over 200 countries!",
+                ];
+                const fact =
+                  funFacts[Math.floor(Math.random() * funFacts.length)];
+                return (
+                  <div class="flex h-[400px] w-full flex-col items-center justify-center gap-6">
+                    {/* Animated Mascot (SVG) */}
+                    <div class="animate-bounce">
+                      <svg
+                        width="64"
+                        height="64"
+                        fill="none"
+                        viewBox="0 0 64 64"
+                      >
+                        <circle cx="32" cy="32" r="30" fill="#f3f4f6" />
+                        <ellipse
+                          cx="32"
+                          cy="40"
+                          rx="12"
+                          ry="6"
+                          fill="#a5b4fc"
+                        />
+                        <circle cx="24" cy="28" r="3" fill="#6366f1" />
+                        <circle cx="40" cy="28" r="3" fill="#6366f1" />
+                        <path
+                          d="M28 36 Q32 40 36 36"
+                          stroke="#6366f1"
+                          stroke-width="2"
+                          fill="none"
+                        />
+                      </svg>
                     </div>
-                  ))}
-                </div>
-                {/* Button skeleton */}
-                <div class="relative h-12 w-1/2 overflow-hidden rounded-lg bg-gradient-to-r from-slate-300 via-slate-200 to-slate-300">
-                  <div class="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
-                </div>
-              </div>
-            )}
+                    {/* Animated Dots */}
+                    <div class="flex items-center gap-1">
+                      <span class="animate-bounce text-lg text-blue-600 [animation-delay:0ms]">
+                        .
+                      </span>
+                      <span class="animate-bounce text-lg text-blue-600 [animation-delay:150ms]">
+                        .
+                      </span>
+                      <span class="animate-bounce text-lg text-blue-600 [animation-delay:300ms]">
+                        .
+                      </span>
+                    </div>
+                    {/* Loading Text */}
+                    <div class="animate-pulse text-base font-semibold text-slate-700">
+                      Generating your quiz questions...
+                    </div>
+                    {/* Fun Fact */}
+                    <div class="mt-4 max-w-xs text-center text-xs text-slate-500">
+                      <span class="font-bold">Did you know?</span> {fact}
+                    </div>
+                  </div>
+                );
+              })()}
 
             {started.value && !loading.value && state.questions.length > 0 && (
               <div class="w-full">
