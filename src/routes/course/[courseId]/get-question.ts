@@ -40,7 +40,7 @@ Task: Generate exactly ${count} brand new, exam-level multiple-choice questions 
 	•	Include a realistic mix: conceptual, scenario-based, best practices, security, pricing/cost, troubleshooting, and service limitation questions—depending on the real exam content.
 	•	Use authentic exam language such as “What is the MOST appropriate…”, “Which option BEST meets the requirement…”, or “What should the professional do FIRST…”.
 	•	Avoid these previous questions:
-${exclude.length > 0 ? exclude.join(”\n”) : “None”}
+  ${exclude.length > 0 ? exclude.join("\n") : "None"}
 
 Rules:
 	•	Each question MUST have 4 options, only 1 correct answer, and realistic distractors.
