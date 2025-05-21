@@ -175,7 +175,7 @@ export default component$(() => {
   });
 
   return (
-    <div class="animate-fade-in flex items-start justify-start px-4 pt-2 pb-8">
+    <div class="animate-fade-in flex items-start justify-start px-4 pt-2 pb-8 select-none">
       <div class="mb-6 flex w-full flex-col items-center rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
         <div class="mb-4 flex w-full items-center justify-between">
           <div class="flex w-full items-center gap-2">
