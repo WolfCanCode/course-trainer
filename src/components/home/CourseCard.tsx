@@ -7,7 +7,6 @@ import ImgOracle from "../../media/img/oracle.png?jsx";
 import ImgIbm from "../../media/img/ibm.png?jsx";
 import ImgHashicorp from "../../media/img/hashicorp.png?jsx";
 import ImgPmi from "../../media/img/pmi.png?jsx";
-import { Marquee } from "./Marquee";
 
 interface CourseCardProps {
   id: string;
